@@ -20,6 +20,7 @@ Report Parsing: Support for interpreting and modifying HID input reports in real
 
 ## Project Structure
 
+```
 core/         → USB protocol logic and HID handling
 hw/           → Board-specific low-level USB drivers
 apps/         → Example applications (proxy, injector, analyzer)
@@ -27,12 +28,9 @@ include/      → Public headers
 docs/         → Project documentation and development notes
 tools/        → Helper scripts for descriptor parsing, report generation
 Makefile      → Project build system
-README.md     → This file
-LICENSE       → Open source license (TBD)
+```
 
----
-
-Getting Started
+## Getting Started
 
 _Coming soon._
 
