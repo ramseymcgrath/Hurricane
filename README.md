@@ -44,12 +44,19 @@ Milestone 1: enumerate a real USB mouse, forward its movement data through a USB
 
 ## Roadmap
 [ ] Host-side control transfer engine
+
 [ ] Device-side HID mouse emulator
+
 [ ] Descriptor mirroring engine
+
 [ ] Report forwarding pipeline
+
 [ ] External injection API
+
 [ ] Multi-device routing (future)
+
 [ ] Descriptor rewriting (future)
+
 [ ] Custom device passthrough (future)
 
 ## Contributing
