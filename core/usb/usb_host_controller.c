@@ -40,14 +40,22 @@ void usb_host_poll(void)
     {
         case DEVICE_STATE_DEFAULT:
             printf("[host] Setting device address...\n");
-            usb_control_set_address(1); // Assign address 1
+            if (usb_control_set_address(1) != 0) {
+                printf("[host] Error setting device address.\n");
+                device.state = DEVICE_STATE_ERROR;
+                break;
+            }
             device.device_address = 1;
             device.state = DEVICE_STATE_ADDRESS;
             break;
 
         case DEVICE_STATE_ADDRESS:
             printf("[host] Fetching device descriptor...\n");
-            usb_control_get_device_descriptor(device.device_address);
+            if (usb_control_get_device_descriptor(device.device_address) != 0) {
+                printf("[host] Error fetching device descriptor.\n");
+                device.state = DEVICE_STATE_ERROR;
+                break;
+            }
             device.state = DEVICE_STATE_CONFIGURED;
             break;
 
@@ -59,6 +67,9 @@ void usb_host_poll(void)
         case DEVICE_STATE_ERROR:
         default:
             printf("[host] Device in error state.\n");
+            // Attempt recovery or reset
+            usb_hw_reset_bus();
+            device.state = DEVICE_STATE_DEFAULT;
             break;
     }
 }

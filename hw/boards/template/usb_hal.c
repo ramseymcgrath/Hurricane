@@ -1,10 +1,10 @@
 // Dummy USB HAL for Hurricane project
 // hw/boards/dummy/usb_hw_hal.c
 
-#include "usb/usb_hw_hal.h"
-#include "usb/usb_control.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <usb/usb_control.h>
 
 // Simulated Device Descriptor (USB spec 2.0 compliant, fake values)
 static uint8_t dummy_device_descriptor[18] = {
