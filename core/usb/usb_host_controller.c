@@ -1,6 +1,6 @@
 #include "usb_host_controller.h"
 #include "usb_control.h"
-#include "usb_hw_common.h"  // Uncommented this include
+#include "usb_hw_hal.h"
 #include <stdio.h>
 
 // USB standard request codes
@@ -40,14 +40,22 @@ void usb_host_poll(void)
     {
         case DEVICE_STATE_DEFAULT:
             printf("[host] Setting device address...\n");
-            usb_control_set_address(1); // Assign address 1
+            if (usb_control_set_address(1) != 0) {
+                printf("[host] Error setting device address.\n");
+                device.state = DEVICE_STATE_ERROR;
+                break;
+            }
             device.device_address = 1;
             device.state = DEVICE_STATE_ADDRESS;
             break;
 
         case DEVICE_STATE_ADDRESS:
             printf("[host] Fetching device descriptor...\n");
-            usb_control_get_device_descriptor(device.device_address);
+            if (usb_control_get_device_descriptor(device.device_address) != 0) {
+                printf("[host] Error fetching device descriptor.\n");
+                device.state = DEVICE_STATE_ERROR;
+                break;
+            }
             device.state = DEVICE_STATE_CONFIGURED;
             break;
 
@@ -59,6 +67,9 @@ void usb_host_poll(void)
         case DEVICE_STATE_ERROR:
         default:
             printf("[host] Device in error state.\n");
+            // Attempt recovery or reset
+            usb_hw_reset_bus();
+            device.state = DEVICE_STATE_DEFAULT;
             break;
     }
 }
@@ -73,7 +84,7 @@ void usb_control_set_address(uint8_t address)
         .wLength = 0,
     };
 
-    usb_hw_send_setup_packet(&setup);
+    usb_hw_send_setup(&setup);
     printf("[control] Sent SET_ADDRESS %u\n", address);
 }
 
@@ -87,7 +98,7 @@ void usb_control_get_device_descriptor(uint8_t address)
         .wLength = 18, // Device descriptor is 18 bytes
     };
 
-    usb_hw_send_setup_packet(&setup);
+    usb_hw_send_setup(&setup);
     printf("[control] Requested DEVICE descriptor\n");
 
     // TODO: receive descriptor buffer

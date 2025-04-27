@@ -30,14 +30,27 @@ int test_usb_setup_packet(void)
 
     TEST_PASS();
 }
+int test_usb_control_set_address(void)
+{
+    int result = usb_control_set_address(1);
+    TEST_ASSERT_EQUAL_INT(0, result, "Failed to set USB device address");
+    TEST_PASS();
+}
+
+int test_usb_control_get_device_descriptor(void)
+{
+    int result = usb_control_get_device_descriptor(1);
+    TEST_ASSERT_EQUAL_INT(0, result, "Failed to get USB device descriptor");
+    TEST_PASS();
+}
 
 int test_usb_control(void)
 {
     int failures = 0;
 
     RUN_TEST(test_usb_setup_packet);
-
-    // Add more USB control tests here
+    RUN_TEST(test_usb_control_set_address);
+    RUN_TEST(test_usb_control_get_device_descriptor);
 
     return failures;
 }
