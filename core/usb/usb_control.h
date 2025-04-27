@@ -12,5 +12,7 @@ typedef struct __attribute__((packed)) {
 } usb_setup_packet_t;
 
 void usb_handle_setup_packet(const usb_setup_packet_t* setup);
+void usb_control_set_address(uint8_t address);
+void usb_control_get_device_descriptor(uint8_t address);
 
 #endif // USB_CONTROL_H

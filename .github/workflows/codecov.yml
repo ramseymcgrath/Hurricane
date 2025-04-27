@@ -1,0 +1,33 @@
+name: Code Coverage
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make lcov
+
+    - name: Build and run tests with coverage
+      run: |
+        cd tests
+        make coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./build/tests/
+        fail_ci_if_error: false
+        files: ./build/tests/coverage.info
+        flags: unittests
+        name: codecov-umbrella

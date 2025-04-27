@@ -2,6 +2,8 @@
 
 Hurricane is an open-source C library for transparent and managed HID communications over USB.
 
+[![Code Coverage](https://codecov.io/gh/ramseymcgrath/Hurricane/branch/main/graph/badge.svg)](https://codecov.io/gh/ramseymcgrath/Hurricane)
+
 ---
 
 It is designed to give developers full control over USB HID behavior, from enumeration to packet-level traffic forwarding and injection.
