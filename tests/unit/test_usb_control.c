@@ -37,7 +37,5 @@ int test_usb_control(void)
 
     RUN_TEST(test_usb_setup_packet);
 
-    // Add more USB control tests here
-
     return failures;
 }

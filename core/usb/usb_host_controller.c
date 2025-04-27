@@ -1,6 +1,6 @@
 #include "usb_host_controller.h"
 #include "usb_control.h"
-#include "usb_hw_common.h"  // Uncommented this include
+#include "usb_hw_hal.h"
 #include <stdio.h>
 
 // USB standard request codes
@@ -73,7 +73,7 @@ void usb_control_set_address(uint8_t address)
         .wLength = 0,
     };
 
-    usb_hw_send_setup_packet(&setup);
+    usb_hw_send_setup(&setup);
     printf("[control] Sent SET_ADDRESS %u\n", address);
 }
 
@@ -87,7 +87,7 @@ void usb_control_get_device_descriptor(uint8_t address)
         .wLength = 18, // Device descriptor is 18 bytes
     };
 
-    usb_hw_send_setup_packet(&setup);
+    usb_hw_send_setup(&setup);
     printf("[control] Requested DEVICE descriptor\n");
 
     // TODO: receive descriptor buffer

@@ -1,9 +1,9 @@
 TARGET     = hurricane_proxy
 TEST_TARGET = hurricane_tests
 BUILD_DIR  = build
-SRC_DIRS   = core apps/proxy hw/common
+SRC_DIRS   = core apps/proxy hw/common hw/boards/template
 TEST_SRC_DIR = tests
-INCLUDE_DIRS = include
+INCLUDE_DIRS = include core
 
 CC         = gcc
 CFLAGS     = -Wall -Wextra -std=c11 -g
