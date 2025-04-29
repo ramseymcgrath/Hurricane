@@ -20,7 +20,9 @@ jobs:
 
     - name: Copy files
       run: |
-        cp include/hurricane/*.h build/Hurricane/src/
+        cp include/hurricane/hw/*.h build/Hurricane/src/
+        cp include/hurricane/core/*h build/Hurricane/src/
+        cp include/hurricane/usb/*.h build/Hurricane/src/
         cp core/*.c build/Hurricane/src/
         cp src/usb/*.c build/Hurricane/src/
         cp src/hw/boards/teensy41/*.c build/Hurricane/src/
