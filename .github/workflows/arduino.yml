@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'  # Only trigger on version tags like v0.1.0
 
+permissions:
+  contents: write
+
 jobs:
   package_release:
     runs-on: ubuntu-latest
@@ -26,7 +29,6 @@ jobs:
         cp core/*.c build/Hurricane/src/
         cp src/usb/*.c build/Hurricane/src/
         cp src/hw/boards/teensy41/*.c build/Hurricane/src/
-        cp -r examples/* build/Hurricane/examples/
 
     - name: Create library.properties
       run: |
