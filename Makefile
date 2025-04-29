@@ -1,4 +1,3 @@
-TARGET         = hurricane_proxy
 TEST_TARGET    = hurricane_tests
 BUILD_DIR      = build
 
@@ -6,13 +5,13 @@ BUILD_DIR      = build
 HURRICANE_DIR   = lib/hurricane
 CORE_DIR        = $(HURRICANE_DIR)/core
 USB_DIR         = $(HURRICANE_DIR)/usb
-HW_COMMON_DIR   = $(HURRICANE_DIR)/hw/common
+HW_DIR          = $(HURRICANE_DIR)/hw
 DUMMY_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/dummy
 TEENSY_HAL_DIR  = $(HURRICANE_DIR)/hw/boards/teensy41
-PROXY_DIR       = apps/proxy
+ESP32_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/esp32-s3-devkitc-1
 TEST_DIR        = tests
 
-INCLUDE_DIRS    = lib/hurricane/include $(CORE_DIR) $(USB_DIR) $(HW_COMMON_DIR)
+INCLUDE_DIRS    = $(HURRICANE_DIR) $(CORE_DIR) $(USB_DIR) $(HW_DIR)
 
 CC             = gcc
 CFLAGS         = -Wall -Wextra -std=c11 -g
@@ -21,20 +20,20 @@ CPPFLAGS       = $(addprefix -I,$(INCLUDE_DIRS))
 # === Source files ===
 CORE_SRC_FILES    = $(shell find $(CORE_DIR) -name '*.c')
 USB_SRC_FILES     = $(shell find $(USB_DIR) -name '*.c')
-HW_COMMON_FILES   = $(shell find $(HW_COMMON_DIR) -name '*.c')
+HW_FILES          = $(shell find $(HW_DIR) -type f -name '*.c' -not -path "*/boards/*")
 DUMMY_HAL_FILES   = $(shell find $(DUMMY_HAL_DIR) -name '*.c')
 TEENSY_HAL_FILES  = $(shell find $(TEENSY_HAL_DIR) -name '*.c')
-PROXY_SRC_FILES   = $(shell find $(PROXY_DIR) -name '*.c')
+ESP32_HAL_FILES   = $(shell find $(ESP32_HAL_DIR) -name '*.c')
 TEST_SRC_FILES    = $(shell find $(TEST_DIR) -name '*.c')
 
 # === Object files ===
 COMMON_OBJ_FILES  = $(CORE_SRC_FILES:%.c=$(BUILD_DIR)/%.o) \
                     $(USB_SRC_FILES:%.c=$(BUILD_DIR)/%.o) \
-                    $(HW_COMMON_FILES:%.c=$(BUILD_DIR)/%.o) \
-                    $(PROXY_SRC_FILES:%.c=$(BUILD_DIR)/%.o)
+                    $(HW_FILES:%.c=$(BUILD_DIR)/%.o)
 
 DUMMY_HAL_OBJS    = $(DUMMY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
 TEENSY_HAL_OBJS   = $(TEENSY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
+ESP32_HAL_OBJS    = $(ESP32_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
 TEST_OBJ_FILES    = $(TEST_SRC_FILES:%.c=$(BUILD_DIR)/%.o)
 
 .PHONY: all clean test production run_tests coverage
