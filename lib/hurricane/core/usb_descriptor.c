@@ -1,4 +1,4 @@
-#include "hurricane/core/usb_descriptor.h"
+#include "usb_descriptor.h"
 #include <string.h>
 
 int usb_parse_device_descriptor(const uint8_t* raw, usb_device_descriptor_t* desc)

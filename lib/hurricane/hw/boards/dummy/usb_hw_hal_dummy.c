@@ -1,4 +1,5 @@
-#include "hurricane/hw/usb_hw_hal.h"
+#include "hw/usb_hw_hal.h"
+#if !defined(PLATFORM_ESP32) && !defined(PLATFORM_TEENSY41)
 #include <stdio.h>
 
 void usb_hw_init(void) {
@@ -31,3 +32,4 @@ int usb_hw_receive_control_data(uint8_t* buffer, uint16_t length) {
 void usb_hw_reset_bus(void) {
     printf("[dummy hal] Bus reset\n");
 }
+#endif

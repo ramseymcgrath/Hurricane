@@ -1,7 +1,7 @@
-#include "hurricane/core/usb_host_controller.h"
-#include "hurricane/hw/usb_hw_hal.h"
-#include "hurricane/core/usb_descriptor.h"
-#include "hurricane/usb/usb_control.h"
+#include "core/usb_host_controller.h"
+#include "hw/usb_hw_hal.h"
+#include "core/usb_descriptor.h"
+#include "usb_control.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>

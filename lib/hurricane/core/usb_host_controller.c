@@ -1,6 +1,6 @@
-#include "hurricane/core/usb_host_controller.h"
-#include "hurricane/hw/usb_hw_hal.h"
-#include "hurricane/usb/usb_control.h"
+#include "usb_host_controller.h"
+#include "hw/usb_hw_hal.h"
+#include "usb/usb_control.h"
 #include <stdio.h>
 
 static usb_device_t device;

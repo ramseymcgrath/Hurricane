@@ -1,7 +1,9 @@
 // src/hw/boards/teensy41/usb_hw_hal_teensy41.c
 
-#include "hurricane/hw/usb_hw_hal.h"
+#include "hw/usb_hw_hal.h"
+#if defined(ARDUINO_TEENSY41)
 #include <USBHost_t36.h>
+
 
 static USBHost myusb;
 static USBDevice *dev = nullptr;
@@ -59,3 +61,4 @@ int usb_hw_send_control_transfer(const usb_hw_setup_packet_t* setup, uint8_t* bu
     int r = dev->controlTransfer(bmRequestType, bRequest, wValue, wIndex, buffer, wLength);
     return (r < 0) ? -1 : 0;
 }
+#endif
