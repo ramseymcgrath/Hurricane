@@ -1,7 +1,7 @@
-#ifndef USB_HOST_CONTROLLER_H
-#define USB_HOST_CONTROLLER_H
+#pragma once
 
 #include <stdint.h>
+#include "usb_descriptor.h" // <-- because you need parsed device info
 
 typedef enum {
     DEVICE_STATE_DEFAULT,
@@ -13,10 +13,8 @@ typedef enum {
 typedef struct {
     usb_device_state_t state;
     uint8_t device_address;
-    //TODO: Add other device-specific information etc etc
+    usb_device_descriptor_t device_desc; // Store parsed descriptor
 } usb_device_t;
 
 void usb_host_init(void);
 void usb_host_poll(void);
-
-#endif // USB_HOST_CONTROLLER_H

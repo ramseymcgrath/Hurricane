@@ -55,3 +55,6 @@ dkms.conf
 *.log
 tests/hurricane_tests
 build
+hurricane_tests
+build_teensy/build.options.json
+build_teensy/sketch/teensy41.ino.cpp

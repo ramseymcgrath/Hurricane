@@ -1,0 +1,51 @@
+name: Build Hurricane Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Only trigger on version tags like v0.1.0
+
+jobs:
+  package_release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup directories
+      run: |
+        mkdir -p build/Hurricane/src
+        mkdir -p build/Hurricane/examples
+
+    - name: Copy files
+      run: |
+        cp include/hurricane/*.h build/Hurricane/src/
+        cp core/*.c build/Hurricane/src/
+        cp src/usb/*.c build/Hurricane/src/
+        cp src/hw/boards/teensy41/*.c build/Hurricane/src/
+        cp -r examples/* build/Hurricane/examples/
+
+    - name: Create library.properties
+      run: |
+        cat > build/Hurricane/library.properties <<EOF
+        name=Hurricane
+        version=${GITHUB_REF#refs/tags/v}
+        author=Ramsey McGrath
+        sentence=Transparent HID communication stack.
+        paragraph=Hurricane provides a lightweight, portable USB HID stack for embedded devices.
+        category=Communication
+        architectures=*
+        EOF
+
+    - name: Create ZIP package
+      run: |
+        cd build
+        zip -r hurricane-${GITHUB_REF#refs/tags/v}.zip Hurricane
+
+    - name: Upload release artifact
+      uses: softprops/action-gh-release@v2
+      with:
+        files: build/hurricane-*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

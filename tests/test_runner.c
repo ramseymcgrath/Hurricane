@@ -3,29 +3,28 @@
 #include <stdio.h>
 #include "common/test_common.h"
 
-// Test function declarations
+// === Declarations of test suites ===
 extern int test_usb_control(void);
 extern int test_usb_host_controller(void);
-extern int test_usb_descriptors(void);
+extern int test_usb_descriptor(void);
 
 int main(void)
 {
     int failures = 0;
 
-    printf("Running Hurricane tests...\n");
+    printf("==== Hurricane Project Unit Tests ====\n");
 
-    // Run all test suites
     failures += test_usb_control();
     failures += test_usb_host_controller();
-    failures += test_usb_descriptors();
+    failures += test_usb_descriptor();
 
-    // Print test summary
+    printf("\n======================================\n");
+
     if (failures == 0) {
-        printf("\nAll tests passed.\n");
+        printf("✅ All Hurricane tests passed!\n");
         return 0;
     } else {
-        printf("\n%d test(s) failed.\n", failures);
+        printf("❌ %d test(s) failed.\n", failures);
         return 1;
     }
 }
-
