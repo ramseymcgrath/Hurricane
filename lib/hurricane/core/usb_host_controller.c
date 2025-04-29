@@ -1,5 +1,5 @@
 #include "usb_host_controller.h"
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 #include "usb/usb_control.h"
 #include <stdio.h>
 
@@ -10,7 +10,7 @@ void usb_host_init(void)
     device.state = DEVICE_STATE_DEFAULT;
     device.device_address = 0;
     
-    usb_hw_reset_bus(); // Reset the USB bus
+    hurricane_hw_reset_bus(); // Reset the USB bus
     printf("[host] Bus reset initiated\n");
 }
 
@@ -47,7 +47,7 @@ void usb_host_poll(void)
         case DEVICE_STATE_ERROR:
         default:
             printf("[host] Device in error state. Resetting...\n");
-            usb_hw_reset_bus();
+            hurricane_hw_reset_bus();
             device.state = DEVICE_STATE_DEFAULT;
             break;
     }

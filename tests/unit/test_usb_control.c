@@ -2,7 +2,7 @@
 
 #include "../common/test_common.h"
 #include "usb/usb_control.h"
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -10,21 +10,12 @@
 
 // --- Stubs and Mocking ---
 
-usb_hw_setup_packet_t last_setup_sent;
+hurricane_usb_setup_packet_t last_setup_sent;
 uint8_t last_control_data_sent[64];
 size_t last_control_data_length = 0;
 
-int usb_hw_send_control_transfer(const usb_hw_setup_packet_t* setup, void* buffer, uint16_t length)
-{
-    memcpy(&last_setup_sent, setup, sizeof(usb_hw_setup_packet_t));
-    if (buffer && length > 0) {
-        memcpy(last_control_data_sent, buffer, length);
-        last_control_data_length = length;
-    } else {
-        last_control_data_length = 0;
-    }
-    return 0; // Pretend success
-}
+// Remove these function implementations since they're now provided by usb_hw_hal_dummy.c
+// and we were getting duplicate symbol errors
 
 // --- Unit Tests ---
 

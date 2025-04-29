@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include "common/test_common.h"
-
+#define PLATFORM_DUMMY
 // === Declarations of test suites ===
 extern int test_usb_control(void);
 extern int test_usb_host_controller(void);

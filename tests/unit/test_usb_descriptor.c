@@ -1,6 +1,6 @@
 #include "../common/test_common.h"
 #include "usb/usb_control.h"
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>

@@ -3,7 +3,7 @@
 #include "../common/test_common.h"
 #include "core/usb_host_controller.h"
 #include "usb/usb_control.h"
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 
 #include <stdio.h>
 #include <stdint.h>

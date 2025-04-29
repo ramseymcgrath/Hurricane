@@ -1,7 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include "usb_descriptor.h" // <-- because you need parsed device info
+#include "core/usb_descriptor.h"
+#include "hw/hurricane_hw_hal.h"
 
 typedef enum {
     DEVICE_STATE_DEFAULT,
