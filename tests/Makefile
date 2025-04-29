@@ -2,7 +2,7 @@
 
 TEST_TARGET = hurricane_tests
 BUILD_DIR   = ../build/tests
-SRC_DIRS    = ../core ../src/usb ../src/hw/boards/dummy
+SRC_DIRS    = src core src/hw/common
 TEST_DIRS   = . unit common
 INCLUDE_DIRS = ../include
 

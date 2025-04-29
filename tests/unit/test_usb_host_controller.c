@@ -1,6 +1,6 @@
 // tests/unit/test_usb_host_controller.c
 
-#include "tests/common/test_common.h"
+#include "../common/test_common.h"
 #include "hurricane/core/usb_host_controller.h"
 #include "hurricane/usb/usb_control.h"
 #include "hurricane/hw/usb_hw_hal.h"

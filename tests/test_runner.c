@@ -1,7 +1,7 @@
 // tests/test_runner.c
 
 #include <stdio.h>
-#include "tests/common/test_common.h"
+#include "common/test_common.h"
 
 // === Declarations of test suites ===
 extern int test_usb_control(void);
