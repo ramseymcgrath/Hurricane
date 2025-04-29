@@ -13,4 +13,4 @@ void hurricane_usb_host_init(void);
 void hurricane_task(void);
 hurricane_device_t* hurricane_get_device(void);
 
-int hurricane_control_transfer(hurricane_device_t* dev, usb_setup_packet_t* setup, void* buffer, uint16_t length);
+int hurricane_control_transfer(hurricane_device_t* dev, usb_hw_setup_packet_t* setup, void* buffer, uint16_t length);

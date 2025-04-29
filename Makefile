@@ -1,41 +1,40 @@
-TARGET         = hurricane_proxy
 TEST_TARGET    = hurricane_tests
 BUILD_DIR      = build
 
 # === Source dirs ===
-CORE_DIR        = core
-USB_DIR         = src/usb
-PROXY_DIR       = apps/proxy
+HURRICANE_DIR   = lib/hurricane
+CORE_DIR        = $(HURRICANE_DIR)/core
+USB_DIR         = $(HURRICANE_DIR)/usb
+HW_DIR          = $(HURRICANE_DIR)/hw
+DUMMY_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/dummy
+TEENSY_HAL_DIR  = $(HURRICANE_DIR)/hw/boards/teensy41
+ESP32_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/esp32-s3-devkitc-1
 TEST_DIR        = tests
-DUMMY_HAL_DIR   = src/hw/boards/dummy
-TEENSY_HAL_DIR  = src/hw/boards/teensy41
 
-INCLUDE_DIRS    = include core src
+INCLUDE_DIRS    = $(HURRICANE_DIR) $(CORE_DIR) $(USB_DIR) $(HW_DIR)
 
 CC             = gcc
 CFLAGS         = -Wall -Wextra -std=c11 -g
-CPPFLAGS       = $(addprefix -I,$(INCLUDE_DIRS)) $(addprefix -I,$(CORE_DIR) $(USB_DIR) $(PROXY_DIR))
+CPPFLAGS       = $(addprefix -I,$(INCLUDE_DIRS))
 
 # === Source files ===
-
-# Core code (shared between production and test)
-CORE_SRC_FILES  = $(shell find $(CORE_DIR) -name '*.c')
-USB_SRC_FILES   = $(shell find $(USB_DIR) -name '*.c')
-PROXY_SRC_FILES = $(shell find $(PROXY_DIR) -name '*.c')
-
-# HALs
-DUMMY_HAL_FILES = $(shell find $(DUMMY_HAL_DIR) -name '*.c')
-TEENSY_HAL_FILES = $(shell find $(TEENSY_HAL_DIR) -name '*.c')
-
-# Tests
-TEST_SRC_FILES  = $(shell find $(TEST_DIR) -name '*.c')
+CORE_SRC_FILES    = $(shell find $(CORE_DIR) -name '*.c')
+USB_SRC_FILES     = $(shell find $(USB_DIR) -name '*.c')
+HW_FILES          = $(shell find $(HW_DIR) -type f -name '*.c' -not -path "*/boards/*")
+DUMMY_HAL_FILES   = $(shell find $(DUMMY_HAL_DIR) -name '*.c')
+TEENSY_HAL_FILES  = $(shell find $(TEENSY_HAL_DIR) -name '*.c')
+ESP32_HAL_FILES   = $(shell find $(ESP32_HAL_DIR) -name '*.c')
+TEST_SRC_FILES    = $(shell find $(TEST_DIR) -name '*.c')
 
 # === Object files ===
+COMMON_OBJ_FILES  = $(CORE_SRC_FILES:%.c=$(BUILD_DIR)/%.o) \
+                    $(USB_SRC_FILES:%.c=$(BUILD_DIR)/%.o) \
+                    $(HW_FILES:%.c=$(BUILD_DIR)/%.o)
 
-COMMON_OBJ_FILES = $(CORE_SRC_FILES:%.c=$(BUILD_DIR)/%.o) $(USB_SRC_FILES:%.c=$(BUILD_DIR)/%.o) $(PROXY_SRC_FILES:%.c=$(BUILD_DIR)/%.o)
-DUMMY_HAL_OBJS   = $(DUMMY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
-TEENSY_HAL_OBJS  = $(TEENSY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
-TEST_OBJ_FILES   = $(TEST_SRC_FILES:%.c=$(BUILD_DIR)/%.o)
+DUMMY_HAL_OBJS    = $(DUMMY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
+TEENSY_HAL_OBJS   = $(TEENSY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
+ESP32_HAL_OBJS    = $(ESP32_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
+TEST_OBJ_FILES    = $(TEST_SRC_FILES:%.c=$(BUILD_DIR)/%.o)
 
 .PHONY: all clean test production run_tests coverage
 

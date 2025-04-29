@@ -22,9 +22,9 @@ TEST_SRC_FILES = test_runner.c \
                  unit/test_usb_descriptor.c
 
 # Core, USB, and Dummy HAL files
-CORE_SRC_FILES = $(wildcard ../core/*.c)
-USB_SRC_FILES  = $(wildcard ../src/usb/*.c)
-DUMMY_HAL_SRC_FILES = $(wildcard ../src/hw/boards/dummy/*.c)
+CORE_SRC_FILES = $(wildcard ../lib/hurricane/core/*.c)
+USB_SRC_FILES  = $(wildcard ../lib/hurricane/usb/*.c)
+DUMMY_HAL_SRC_FILES = $(wildcard ../lib/hurricane/hw/boards/dummy/*.c)
 
 CORE_OBJ_FILES = $(CORE_SRC_FILES:../%.c=$(BUILD_DIR)/../%.o)
 USB_OBJ_FILES  = $(USB_SRC_FILES:../%.c=$(BUILD_DIR)/../%.o)

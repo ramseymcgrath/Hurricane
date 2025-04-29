@@ -1,6 +1,6 @@
 // src/hw/boards/teensy41/usb_hw_hal_teensy41.h
 #pragma once
-
+#if defined(ARDUINO_TEENSY41)
 #include <stdint.h>
 
 // Match the hurricane HAL structure
@@ -17,3 +17,4 @@ void usb_hw_task(void);
 int usb_hw_device_connected(void);
 int usb_hw_reset_bus(void);
 int usb_hw_send_control_transfer(const usb_hw_setup_packet_t* setup, uint8_t* buffer, uint16_t length);
+#endif

@@ -1,6 +1,8 @@
 #include "hurricane_usb.h"
-#include "hw/common/usb_hw_hal.h"
+#include "hw/usb_hw_hal.h"
+#include "usb/usb_control.h"
 #include <stdint.h>
+#include <stdio.h>
 
 static hurricane_device_t hurricane_dev = {0};
 
@@ -23,7 +25,7 @@ hurricane_device_t* hurricane_get_device(void) {
     return NULL;
 }
 
-int hurricane_control_transfer(hurricane_device_t* dev, usb_setup_packet_t* setup, void* buffer, uint16_t length) {
+int hurricane_control_transfer(hurricane_device_t* dev, usb_hw_setup_packet_t* setup, void* buffer, uint16_t length) {
     if (!dev) return -1;
     return usb_hw_send_control_transfer(setup, buffer, length);
 }

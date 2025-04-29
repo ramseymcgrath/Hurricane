@@ -17,3 +17,4 @@ void usb_hw_reset_bus(void);
 
 // Perform control transfers
 int usb_hw_send_control_transfer(const usb_hw_setup_packet_t* setup, void* buffer, uint16_t length);
+int usb_hw_device_connected(void);
