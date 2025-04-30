@@ -3,6 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 
+// HID mouse report format (based on standard boot protocol)
+typedef struct {
+    uint8_t buttons;  // Bit 0: Left, Bit 1: Right, Bit 2: Middle
+    int8_t x;         // Relative X movement
+    int8_t y;         // Relative Y movement
+    int8_t wheel;     // Vertical wheel
+} mouse_report_t;
+
 void hurricane_hid_init(hurricane_device_t* dev) {
     dev->hid_device->report_id = 0;
     dev->hid_device->protocol = 1; // Default to boot protocol
@@ -22,6 +30,33 @@ void hurricane_hid_init(hurricane_device_t* dev) {
     // TODO: Optionally set protocol to boot/report
 }
 
+static void parse_mouse_report(uint8_t* buffer, int length) {
+    if (length < 3) {
+        // Not enough data for a mouse report
+        return;
+    }
+    
+    mouse_report_t report;
+    memset(&report, 0, sizeof(report));
+    
+    // Basic boot protocol mouse has 3 bytes minimum
+    report.buttons = buffer[0];
+    report.x = buffer[1];
+    report.y = buffer[2];
+    
+    // Optional wheel data if available
+    if (length > 3) {
+        report.wheel = buffer[3];
+    }
+    
+    // Print a human-readable description of the mouse state
+    printf("[MOUSE] Buttons: %s%s%s | X: %d, Y: %d, Wheel: %d\n",
+           (report.buttons & 0x01) ? "LEFT " : "",
+           (report.buttons & 0x02) ? "RIGHT " : "",
+           (report.buttons & 0x04) ? "MIDDLE " : "",
+           report.x, report.y, report.wheel);
+}
+
 void hurricane_hid_task(hurricane_device_t* dev) {
     uint8_t buffer[64];
     int res = hurricane_hw_interrupt_in_transfer(dev->addr, buffer, sizeof(buffer));
@@ -31,7 +66,9 @@ void hurricane_hid_task(hurricane_device_t* dev) {
             printf(" 0x%02X", buffer[i]);
         }
         printf("\n");
-        // TODO: Parse known HID report types here
+        
+        // Attempt to parse it as a mouse report
+        parse_mouse_report(buffer, res);
     }
 }
 

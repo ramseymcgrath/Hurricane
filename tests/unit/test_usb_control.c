@@ -10,12 +10,10 @@
 
 // --- Stubs and Mocking ---
 
-hurricane_usb_setup_packet_t last_setup_sent;
-uint8_t last_control_data_sent[64];
-size_t last_control_data_length = 0;
-
-// Remove these function implementations since they're now provided by usb_hw_hal_dummy.c
-// and we were getting duplicate symbol errors
+// These globals are defined in the HAL implementation, we just reference them
+extern hurricane_usb_setup_packet_t last_setup_sent;
+extern uint8_t last_control_data_sent[64];
+extern size_t last_control_data_length;
 
 // --- Unit Tests ---
 

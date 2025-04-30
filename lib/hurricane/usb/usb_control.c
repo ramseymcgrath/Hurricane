@@ -42,7 +42,7 @@ int usb_control_get_device_descriptor(uint8_t address, usb_device_descriptor_t* 
     }
 
     hurricane_usb_setup_packet_t setup = {
-        .bmRequestType = USB_REQ_TYPE_STANDARD | USB_REQ_RECIPIENT_DEVICE,
+        .bmRequestType = USB_REQ_TYPE_STANDARD | USB_REQ_RECIPIENT_DEVICE | 0x80, // Add Device-to-Host bit
         .bRequest = USB_REQ_GET_DESCRIPTOR,
         .wValue = (USB_DESC_TYPE_DEVICE << 8),
         .wIndex = 0,
@@ -51,7 +51,8 @@ int usb_control_get_device_descriptor(uint8_t address, usb_device_descriptor_t* 
 
     uint8_t buffer[USB_DEVICE_DESCRIPTOR_SIZE];
 
-    if (hurricane_hw_control_transfer(&setup, buffer, sizeof(buffer)) != 0) {
+    int received = hurricane_hw_control_transfer(&setup, buffer, sizeof(buffer));
+    if (received <= 0) {
         printf("[usb_control] Failed to request device descriptor for address %u\n", address);
         return -1;
     }
