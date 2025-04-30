@@ -57,9 +57,12 @@ tests/hurricane_tests
 build
 hurricane_tests
 build_teensy/
-build_teensy/
 .pio
 .vscode/.browse.c_cpp.db*
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+Hurricane.code-workspace
+sdkconfig.seeed_xiao_esp32c3
+sdkconfig.seeed_xiao_esp32c3.old
+sdkconfig.esp32-s3-devkitc-1

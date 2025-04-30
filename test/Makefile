@@ -15,8 +15,24 @@ CC          = gcc
 CFLAGS      = -Wall -Wextra -std=c11 -g
 CPPFLAGS = $(addprefix -I,$(INCLUDE_DIRS)) -I..
 
-# Optional: Add code coverage flags
-COVERAGE_FLAGS = --coverage -fprofile-arcs -ftest-coverage
+# Detect macOS Apple Silicon and use clang
+ifeq ($(shell uname -s),Darwin)
+  ifeq ($(shell uname -m),arm64)
+    CC = clang
+    # For troubleshooting
+    VERBOSE = 1
+  endif
+endif
+
+# Optional: Add code coverage flags - simplified
+COVERAGE_FLAGS = --coverage
+
+# For verbose output
+ifeq ($(VERBOSE),1)
+  Q =
+else
+  Q = @
+endif
 
 # === Test Sources ===
 
@@ -47,11 +63,12 @@ all: $(TEST_TARGET)
 
 $(TEST_TARGET): $(ALL_OBJ_FILES)
 	@echo " Linking $@"
-	@$(CC) $(CFLAGS) $^ -o $@
+	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 # === Coverage Target ===
 
 coverage: CFLAGS += $(COVERAGE_FLAGS)
+coverage: LDFLAGS += $(RUNTIME_COV_LIB) --coverage
 coverage: clean $(TEST_TARGET)
 	@echo " Running tests with coverage"
 	@./$(TEST_TARGET)
@@ -65,13 +82,13 @@ coverage: clean $(TEST_TARGET)
 
 $(BUILD_DIR)/%.o: %.c
 	@echo " Compiling test source $<"
-	@mkdir -p $(dir $@)
-	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/../%.o: ../%.c
 	@echo " Compiling project source $<"
-	@mkdir -p $(dir $@)
-	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(Q)mkdir -p $(dir $@)
+	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 # === Run Target ===
 

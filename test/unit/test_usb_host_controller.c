@@ -11,13 +11,20 @@
 
 // --- Stubs for dependencies ---
 
-static uint8_t test_address_set = 0;
-static uint8_t test_descriptor_requested = 0;
+// These variables are defined in the dummy HAL implementation
+extern uint8_t test_address_set;
+extern uint8_t test_descriptor_requested;
+
+// Make these variables extern so they can be modified by the dummy HAL
+extern hurricane_usb_setup_packet_t last_setup_sent;
 
 void test_usb_hw_reset_bus(void)
 {
     printf("[test stub] usb_hw_reset_bus called\n");
 }
+
+// Remove the duplicate hurricane_hw_control_transfer implementation
+// We'll modify the existing one in the dummy HAL instead
 
 // --- Test Lifecycle ---
 

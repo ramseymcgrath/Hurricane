@@ -9,6 +9,10 @@ hurricane_usb_setup_packet_t last_setup_sent;
 uint8_t last_control_data_sent[64];
 size_t last_control_data_length = 0;
 
+// These variables will be accessed by the test file
+uint8_t test_address_set = 0;
+uint8_t test_descriptor_requested = 0;
+
 void hurricane_hw_init(void) {
     printf("[stub-hal] hurricane_hw_init()\n");
 }
@@ -26,6 +30,15 @@ int hurricane_hw_control_transfer(const hurricane_usb_setup_packet_t* setup, voi
     
     // Save the setup packet for tests to verify
     memcpy(&last_setup_sent, setup, sizeof(hurricane_usb_setup_packet_t));
+    
+    // Track the operations for our tests
+    if (setup->bRequest == USB_REQ_SET_ADDRESS) {
+        test_address_set = setup->wValue; // Store the address value being set
+    }
+    else if (setup->bRequest == USB_REQ_GET_DESCRIPTOR && 
+             ((setup->wValue >> 8) == USB_DESC_TYPE_DEVICE)) {
+        test_descriptor_requested = 1;
+    }
     
     // For GET_DESCRIPTOR requests in tests, simulate successful data
     if (setup->bRequest == USB_REQ_GET_DESCRIPTOR && 

@@ -1,3 +1,5 @@
+#ifdef MAX3421E_ENABLED
+
 #include "hw/hurricane_hw_hal.h"
 #include "max3421e_registers.h"
 #include <stdio.h>
@@ -597,3 +599,5 @@ int hurricane_hw_interrupt_in_transfer(uint8_t endpoint, void* buffer, uint16_t 
     return -1;
 }
 #endif // PLATFORM_ESP32
+
+#endif // MAX3421E_ENABLED
