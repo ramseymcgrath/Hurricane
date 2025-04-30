@@ -9,13 +9,32 @@ HW_DIR          = $(HURRICANE_DIR)/hw
 DUMMY_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/dummy
 TEENSY_HAL_DIR  = $(HURRICANE_DIR)/hw/boards/teensy41
 ESP32_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/esp32-s3-devkitc-1
-TEST_DIR        = tests
+TEST_DIR        = test
 
 INCLUDE_DIRS    = $(HURRICANE_DIR) $(CORE_DIR) $(USB_DIR) $(HW_DIR)
 
 CC             = gcc
 CFLAGS         = -Wall -Wextra -std=c11 -g
 CPPFLAGS       = $(addprefix -I,$(INCLUDE_DIRS))
+LDFLAGS        = 
+
+# Detect macOS Apple Silicon and use clang
+ifeq ($(shell uname -s),Darwin)
+  ifeq ($(shell uname -m),arm64)
+    CC = clang
+    # For troubleshooting
+    VERBOSE = 1
+  endif
+endif
+
+# For verbose output
+ifeq ($(VERBOSE),1)
+  Q =
+else
+  Q = @
+endif
+
+# macOS's clang integrates coverage libraries by default when using --coverage
 
 # === Source files ===
 CORE_SRC_FILES    = $(shell find $(CORE_DIR) -name '*.c')
@@ -48,17 +67,15 @@ $(TARGET): $(COMMON_OBJ_FILES) $(TEENSY_HAL_OBJS)
 	@$(CC) $(CFLAGS) $^ -o $@
 
 # === Test build ===
-test: $(TEST_TARGET)
-
-$(TEST_TARGET): $(COMMON_OBJ_FILES) $(DUMMY_HAL_OBJS) $(TEST_OBJ_FILES)
+test: $(COMMON_OBJ_FILES) $(DUMMY_HAL_OBJS) $(TEST_OBJ_FILES)
 	@echo " Linking $@ (tests)"
-	@$(CC) $(CFLAGS) $^ -o $@
+	$(Q)$(CC) $(CFLAGS) $^ -o $(TEST_TARGET)
 
 run_tests: test
 	@./$(TEST_TARGET)
 
 coverage: clean
-	@$(MAKE) CFLAGS="$(CFLAGS) --coverage -fprofile-arcs -ftest-coverage" test
+	@$(MAKE) CFLAGS="$(CFLAGS) --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="$(LDFLAGS) $(RUNTIME_COV_LIB) --coverage" test
 	@./$(TEST_TARGET)
 	@lcov --capture --directory $(BUILD_DIR) --output-file $(BUILD_DIR)/coverage.info --ignore-errors source
 	@genhtml $(BUILD_DIR)/coverage.info --output-directory $(BUILD_DIR)/coverage-report || true

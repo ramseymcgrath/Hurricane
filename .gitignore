@@ -63,3 +63,8 @@ build_teensy/
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+test/Makefile
+.gitignore
+Hurricane.code-workspace
+sdkconfig.seeed_xiao_esp32c3
+sdkconfig.seeed_xiao_esp32c3.old

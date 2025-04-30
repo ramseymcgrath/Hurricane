@@ -1,6 +1,6 @@
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 #if defined(PLATFORM_ESP32)
-#include "tusb.h"
+#include "tinyusb/tusb.h"
 #include "esp_log.h"
 
 static const char* TAG = "usb_hw_esp32";
