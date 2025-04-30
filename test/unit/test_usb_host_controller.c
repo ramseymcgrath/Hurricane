@@ -23,9 +23,6 @@ void test_usb_hw_reset_bus(void)
     printf("[test stub] usb_hw_reset_bus called\n");
 }
 
-// Remove the duplicate hurricane_hw_control_transfer implementation
-// We'll modify the existing one in the dummy HAL instead
-
 // --- Test Lifecycle ---
 
 void setUp(void)
