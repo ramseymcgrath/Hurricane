@@ -14,7 +14,7 @@ int usb_hw_device_connected(void) {
     return 1; // Pretend a device is always connected
 }
 
-int usb_hw_send_setup(const usb_hw_setup_packet_t* setup) {
+int usb_hw_send_setup(const hurricane_usb_setup_packet_t* setup) {
     printf("[stub-hal] usb_hw_send_setup(): Request=0x%02X\n", setup->bRequest);
     return 0;
 }
