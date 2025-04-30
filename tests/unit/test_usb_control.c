@@ -2,7 +2,7 @@
 
 #include "../common/test_common.h"
 #include "usb/usb_control.h"
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -10,21 +10,10 @@
 
 // --- Stubs and Mocking ---
 
-usb_hw_setup_packet_t last_setup_sent;
-uint8_t last_control_data_sent[64];
-size_t last_control_data_length = 0;
-
-int usb_hw_send_control_transfer(const usb_hw_setup_packet_t* setup, void* buffer, uint16_t length)
-{
-    memcpy(&last_setup_sent, setup, sizeof(usb_hw_setup_packet_t));
-    if (buffer && length > 0) {
-        memcpy(last_control_data_sent, buffer, length);
-        last_control_data_length = length;
-    } else {
-        last_control_data_length = 0;
-    }
-    return 0; // Pretend success
-}
+// These globals are defined in the HAL implementation, we just reference them
+extern hurricane_usb_setup_packet_t last_setup_sent;
+extern uint8_t last_control_data_sent[64];
+extern size_t last_control_data_length;
 
 // --- Unit Tests ---
 

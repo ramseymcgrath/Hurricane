@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include "core/usb_descriptor.h"
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 // USB request types
 #define USB_REQ_TYPE_STANDARD  (0x00)
 #define USB_REQ_TYPE_CLASS     (0x20)

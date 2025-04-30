@@ -32,6 +32,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install platformio
+        echo "$HOME/.platformio/penv/bin" >> $GITHUB_PATH
 
     - name: Build ESP32 firmware
       run: |

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include "usb_descriptor.h" // <-- because you need parsed device info
+#include "core/usb_descriptor.h"
+#include "hw/hurricane_hw_hal.h"
 
 typedef enum {
     DEVICE_STATE_DEFAULT,
@@ -14,6 +15,11 @@ typedef struct {
     usb_device_state_t state;
     uint8_t device_address;
     usb_device_descriptor_t device_desc; // Store parsed descriptor
+    
+    // HID device tracking
+    uint8_t hid_configured;    // Flag to indicate HID device is configured
+    uint8_t hid_interface;     // Interface number for HID device
+    uint8_t hid_endpoint;      // Endpoint address for HID interrupt IN
 } usb_device_t;
 
 void usb_host_init(void);

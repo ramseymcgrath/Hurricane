@@ -1,4 +1,4 @@
-#include "hw/usb_hw_hal.h"
+#include "hw/hurricane_hw_hal.h"
 #if !defined(PLATFORM_ESP32) && !defined(PLATFORM_TEENSY41)
 #include <stdio.h>
 

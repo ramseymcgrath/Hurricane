@@ -4,7 +4,12 @@ TEST_TARGET = hurricane_tests
 BUILD_DIR   = ../build/tests
 SRC_DIRS    = src core src/hw/common
 TEST_DIRS   = . unit common
-INCLUDE_DIRS = ../include
+INCLUDE_DIRS = ../include \
+               ../lib/hurricane \
+               ../lib/hurricane/core \
+               ../lib/hurricane/hw \
+               ../lib/hurricane/hw/boards/dummy \
+               ../lib/hurricane/usb
 
 CC          = gcc
 CFLAGS      = -Wall -Wextra -std=c11 -g
