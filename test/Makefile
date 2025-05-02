@@ -42,6 +42,8 @@ COVERAGE_FLAGS = --coverage
 CORE_SRC_FILES      = $(wildcard $(CORE_DIR)/*.c)
 USB_SRC_FILES       = $(wildcard $(USB_DIR)/*.c)
 DUMMY_HAL_SRC_FILES = $(wildcard $(DUMMY_HAL_DIR)/*.c)
+# Make sure the dummy HAL fix is always included
+DUMMY_HAL_SRC_FILES += $(DUMMY_HAL_DIR)/usb_hw_hal_dummy_fix.c
 TEST_SRC_FILES      = test_runner.c $(wildcard $(UNIT_TEST_DIR)/*.c) $(wildcard $(COMMON_TEST_DIR)/*.c)
 
 ALL_SRC_FILES = $(CORE_SRC_FILES) $(USB_SRC_FILES) $(DUMMY_HAL_SRC_FILES) $(addprefix $(TEST_DIR)/,$(TEST_SRC_FILES))
@@ -55,7 +57,8 @@ all: $(TEST_TARGET)
 
 $(TEST_TARGET): $(OBJ_FILES)
 	@echo " Linking $@"
-	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ_FILES) -o $@
+	@echo " Build complete: $@"
 
 coverage: CFLAGS += $(COVERAGE_FLAGS)
 coverage: LDFLAGS += --coverage

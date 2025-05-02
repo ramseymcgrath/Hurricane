@@ -7,6 +7,7 @@
 extern int test_usb_control(void);
 extern int test_usb_host_controller(void);
 extern int test_usb_descriptor(void);
+extern int test_usb_interface_manager(void);
 
 int main(void)
 {
@@ -17,6 +18,7 @@ int main(void)
     failures += test_usb_control();
     failures += test_usb_host_controller();
     failures += test_usb_descriptor();
+    failures += test_usb_interface_manager();
 
     printf("\n======================================\n");
 
