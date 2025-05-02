@@ -1,90 +1,103 @@
-TEST_TARGET    = hurricane_tests
-BUILD_DIR      = build
+# === Hurricane Project Makefile ===
+# Usage:
+#   make BOARD=<board> [target]
+# Boards: dummy (default), teensy41, esp32, rt1060, max3421e
 
-# === Source dirs ===
-HURRICANE_DIR   = lib/hurricane
-CORE_DIR        = $(HURRICANE_DIR)/core
-USB_DIR         = $(HURRICANE_DIR)/usb
-HW_DIR          = $(HURRICANE_DIR)/hw
-DUMMY_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/dummy
-TEENSY_HAL_DIR  = $(HURRICANE_DIR)/hw/boards/teensy41
-ESP32_HAL_DIR   = $(HURRICANE_DIR)/hw/boards/esp32-s3-devkitc-1
-TEST_DIR        = test
+TARGET        = hurricane_app
+TEST_TARGET   = hurricane_tests
+BUILD_DIR     = build
 
-INCLUDE_DIRS    = $(HURRICANE_DIR) $(CORE_DIR) $(USB_DIR) $(HW_DIR)
+# === Source Dirs ===
+HURRICANE_DIR = lib/hurricane
+CORE_DIR      = $(HURRICANE_DIR)/core
+USB_DIR       = $(HURRICANE_DIR)/usb
+HW_DIR        = $(HURRICANE_DIR)/hw
+BOARDS_DIR    = $(HW_DIR)/boards
+TEST_DIR      = test
 
-CC             = gcc
-CFLAGS         = -Wall -Wextra -std=c11 -g
-CPPFLAGS       = $(addprefix -I,$(INCLUDE_DIRS))
-LDFLAGS        = 
+INCLUDE_DIRS  = $(HURRICANE_DIR) $(CORE_DIR) $(USB_DIR) $(HW_DIR)
+
+CC            = gcc
+CFLAGS        = -Wall -Wextra -std=c11 -g
+CPPFLAGS      = $(addprefix -I,$(INCLUDE_DIRS))
+LDFLAGS       =
 
 # Detect macOS Apple Silicon and use clang
 ifeq ($(shell uname -s),Darwin)
   ifeq ($(shell uname -m),arm64)
     CC = clang
-    # For troubleshooting
     VERBOSE = 1
   endif
 endif
 
-# For verbose output
 ifeq ($(VERBOSE),1)
   Q =
 else
   Q = @
 endif
 
-# macOS's clang integrates coverage libraries by default when using --coverage
+# === Board Selection ===
+BOARD ?= dummy
 
-# === Source files ===
-CORE_SRC_FILES    = $(shell find $(CORE_DIR) -name '*.c')
-USB_SRC_FILES     = $(shell find $(USB_DIR) -name '*.c')
-HW_FILES          = $(shell find $(HW_DIR) -type f -name '*.c' -not -path "*/boards/*")
-DUMMY_HAL_FILES   = $(shell find $(DUMMY_HAL_DIR) -name '*.c')
-TEENSY_HAL_FILES  = $(shell find $(TEENSY_HAL_DIR) -name '*.c')
-ESP32_HAL_FILES   = $(shell find $(ESP32_HAL_DIR) -name '*.c')
-TEST_SRC_FILES    = $(shell find $(TEST_DIR) -name '*.c')
+ifeq ($(BOARD),dummy)
+  HAL_DIR = $(BOARDS_DIR)/dummy
+  HAL_FILES = $(wildcard $(HAL_DIR)/*.c)
+else ifeq ($(BOARD),teensy41)
+  HAL_DIR = $(BOARDS_DIR)/teensy41
+  HAL_FILES = $(wildcard $(HAL_DIR)/*.c)
+else ifeq ($(BOARD),esp32)
+  HAL_DIR = $(BOARDS_DIR)/esp32
+  HAL_FILES = $(wildcard $(HAL_DIR)/*.c)
+else ifeq ($(BOARD),rt1060)
+  HAL_DIR = $(BOARDS_DIR)/rt1060
+  HAL_FILES = $(wildcard $(HAL_DIR)/*.c)
+else ifeq ($(BOARD),max3421e)
+  HAL_DIR = $(BOARDS_DIR)/max3421e
+  HAL_FILES = $(wildcard $(HAL_DIR)/*.c)
+else
+  $(error Unknown BOARD '$(BOARD)')
+endif
 
-# === Object files ===
-COMMON_OBJ_FILES  = $(CORE_SRC_FILES:%.c=$(BUILD_DIR)/%.o) \
-                    $(USB_SRC_FILES:%.c=$(BUILD_DIR)/%.o) \
-                    $(HW_FILES:%.c=$(BUILD_DIR)/%.o)
+# === Source Files ===
+CORE_SRC_FILES = $(wildcard $(CORE_DIR)/*.c)
+USB_SRC_FILES  = $(wildcard $(USB_DIR)/*.c)
+HW_FILES       = $(wildcard $(HW_DIR)/*.c)
+SRC_FILES      = $(CORE_SRC_FILES) $(USB_SRC_FILES) $(HW_FILES) $(HAL_FILES)
 
-DUMMY_HAL_OBJS    = $(DUMMY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
-TEENSY_HAL_OBJS   = $(TEENSY_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
-ESP32_HAL_OBJS    = $(ESP32_HAL_FILES:%.c=$(BUILD_DIR)/%.o)
-TEST_OBJ_FILES    = $(TEST_SRC_FILES:%.c=$(BUILD_DIR)/%.o)
+# === Object Files ===
+OBJ_FILES = $(SRC_FILES:%.c=$(BUILD_DIR)/%.o)
 
+# === Targets ===
 .PHONY: all clean test production run_tests coverage
 
 all: production
 
-# === Production build ===
 production: $(TARGET)
 
-$(TARGET): $(COMMON_OBJ_FILES) $(TEENSY_HAL_OBJS)
-	@echo " Linking $@ (production)"
-	@$(CC) $(CFLAGS) $^ -o $@
+$(TARGET): $(OBJ_FILES) src/main.c
+	@echo " Linking $@ (production for $(BOARD))"
+	$(Q)$(CC) $(CFLAGS) $(OBJ_FILES) src/main.c -o $@
 
-# === Test build ===
-test: $(COMMON_OBJ_FILES) $(DUMMY_HAL_OBJS) $(TEST_OBJ_FILES)
+test: BOARD=dummy
+
+test: $(OBJ_FILES) $(TEST_DIR)/test_runner.c $(wildcard $(TEST_DIR)/unit/*.c) $(wildcard $(TEST_DIR)/common/*.c)
 	@echo " Linking $@ (tests)"
-	$(Q)$(CC) $(CFLAGS) $^ -o $(TEST_TARGET)
+	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ_FILES) $(TEST_DIR)/test_runner.c $(wildcard $(TEST_DIR)/unit/*.c) $(wildcard $(TEST_DIR)/common/*.c) -o $(TEST_TARGET)
 
 run_tests: test
 	@./$(TEST_TARGET)
 
 coverage: clean
-	@$(MAKE) CFLAGS="$(CFLAGS) --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="$(LDFLAGS) $(RUNTIME_COV_LIB) --coverage" test
+	@$(MAKE) CFLAGS="$(CFLAGS) --coverage -fprofile-arcs -ftest-coverage" LDFLAGS="$(LDFLAGS) --coverage" test
 	@./$(TEST_TARGET)
 	@lcov --capture --directory $(BUILD_DIR) --output-file $(BUILD_DIR)/coverage.info --ignore-errors source
 	@genhtml $(BUILD_DIR)/coverage.info --output-directory $(BUILD_DIR)/coverage-report || true
 
-# === Generic compilation rule ===
+# === Compilation Rule ===
 $(BUILD_DIR)/%.o: %.c
 	@echo " Compiling $<"
 	@mkdir -p $(dir $@)
-	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET) $(TEST_TARGET)
