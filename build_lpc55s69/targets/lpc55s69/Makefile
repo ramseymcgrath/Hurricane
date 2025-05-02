@@ -204,108 +204,13 @@ flash_lpc55s69/fast:
 	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/flash_lpc55s69.dir/build.make targets/lpc55s69/CMakeFiles/flash_lpc55s69.dir/build
 .PHONY : flash_lpc55s69/fast
 
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.o: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.o
-
-# target to build an object file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.i: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.i
-
-# target to preprocess a source file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.s: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.s
-
-# target to generate assembly for a file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.o: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.o
-
-# target to build an object file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.i: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.i
-
-# target to preprocess a source file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.s: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.s
-
-# target to generate assembly for a file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.o: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.o
-
-# target to build an object file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.i: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.i
-
-# target to preprocess a source file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.s: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.s
-
-# target to generate assembly for a file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.o: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.o
-
-# target to build an object file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.i: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.i
-
-# target to preprocess a source file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i
-
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.s: __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.s
-
-# target to generate assembly for a file
-__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s:
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s
-.PHONY : __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s
-
 main.o: main.c.o
 .PHONY : main.o
 
 # target to build an object file
 main.c.o:
 	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69.dir/main.c.o
+	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o
 .PHONY : main.c.o
 
 main.i: main.c.i
@@ -314,6 +219,7 @@ main.i: main.c.i
 # target to preprocess a source file
 main.c.i:
 	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69.dir/main.c.i
+	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -322,6 +228,7 @@ main.s: main.c.s
 # target to generate assembly for a file
 main.c.s:
 	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69.dir/main.c.s
+	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69 && $(MAKE) $(MAKESILENT) -f targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.s
 .PHONY : main.c.s
 
 # Help Target
@@ -339,18 +246,6 @@ help:
 	@echo "... flash_lpc55s69"
 	@echo "... hurricane_lpc55s69"
 	@echo "... hurricane_lpc55s69_hal"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.o"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.i"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.s"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.o"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.i"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.s"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.o"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.i"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.s"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.o"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.i"
-	@echo "... __/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

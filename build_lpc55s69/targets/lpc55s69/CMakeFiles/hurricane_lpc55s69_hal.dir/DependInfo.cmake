@@ -8,10 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o" "gcc" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o.d"
-  "/Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o" "gcc" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o.d"
-  "/Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o" "gcc" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o.d"
-  "/Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o" "gcc" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o.d"
+  "/Users/ramseymcgrath/code/Hurricane/targets/lpc55s69/main.c" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o" "gcc" "targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

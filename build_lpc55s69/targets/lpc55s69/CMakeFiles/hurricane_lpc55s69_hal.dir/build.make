@@ -72,79 +72,31 @@ include targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/flags.make
 targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/codegen:
 .PHONY : targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/codegen
 
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/flags.make
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o: /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o -MF CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o.d -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o -c /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c
+targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/flags.make
+targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o: /Users/ramseymcgrath/code/Hurricane/targets/lpc55s69/main.c
+targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o"
+	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o -MF CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o.d -o CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o -c /Users/ramseymcgrath/code/Hurricane/targets/lpc55s69/main.c
 
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c > CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.i
+targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.i"
+	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/ramseymcgrath/code/Hurricane/targets/lpc55s69/main.c > CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.i
 
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.s
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/flags.make
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o: /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o -MF CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o.d -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o -c /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c > CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.i
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.s
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/flags.make
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o: /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o -MF CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o.d -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o -c /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c > CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.i
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.s
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/flags.make
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o: /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o -MF CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o.d -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o -c /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c > CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.i
-
-targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s"
-	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/ramseymcgrath/code/Hurricane/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c -o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.s
+targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.s"
+	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/ramseymcgrath/code/Hurricane/targets/lpc55s69/main.c -o CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.s
 
 # Object files for target hurricane_lpc55s69_hal
 hurricane_lpc55s69_hal_OBJECTS = \
-"CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o" \
-"CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o" \
-"CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o" \
-"CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o"
+"CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o"
 
 # External object files for target hurricane_lpc55s69_hal
 hurricane_lpc55s69_hal_EXTERNAL_OBJECTS =
 
-targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o
-targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o
-targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o
-targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o
+targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o
 targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/build.make
 targets/lpc55s69/libhurricane_lpc55s69_hal.a: targets/lpc55s69/CMakeFiles/hurricane_lpc55s69_hal.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking C static library libhurricane_lpc55s69_hal.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library libhurricane_lpc55s69_hal.a"
 	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && $(CMAKE_COMMAND) -P CMakeFiles/hurricane_lpc55s69_hal.dir/cmake_clean_target.cmake
 	cd /Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69 && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hurricane_lpc55s69_hal.dir/link.txt --verbose=$(VERBOSE)
 

@@ -1,2 +1,2 @@
-/usr/bin/ar qc libhurricane_lpc55s69_hal.a CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c.o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c.o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c.o CMakeFiles/hurricane_lpc55s69_hal.dir/__/__/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c.o
+/usr/bin/ar qc libhurricane_lpc55s69_hal.a CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o
 /usr/bin/ranlib libhurricane_lpc55s69_hal.a

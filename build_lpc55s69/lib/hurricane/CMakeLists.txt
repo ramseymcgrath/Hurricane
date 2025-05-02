@@ -1,33 +1,38 @@
-# Define common source files
-set(HURRICANE_SRC_FILES
+# Define source files for hurricane library
+set(HURRICANE_SRCS
     usb/usb_control.c
     usb/usb_hid.c
-    core/hurricane.c
+    core/hurricane_usb.c
 )
 
-# Define include directories
-set(HURRICANE_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/usb
-    ${CMAKE_CURRENT_SOURCE_DIR}/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/hw
-)
-
-# For ESP-IDF builds, use the component registration system
+# Select board HAL automatically if building with IDF
 if(IDF_BUILD)
-    set(COMPONENT_SRCS ${HURRICANE_SRC_FILES})
-    list(APPEND COMPONENT_SRCS
+    list(APPEND HURRICANE_SRCS
         hw/boards/esp32/usb_hw_hal_esp32.c
     )
+
+    # Define include directories for ESP-IDF component
+    set(COMPONENT_SRCS ${HURRICANE_SRCS})
     set(COMPONENT_ADD_INCLUDEDIRS
         .
         usb
         core
         hw
     )
+    
+    # Register as ESP-IDF component
     register_component()
 else()
-    # For standard CMake builds (RT1060, LPC55S69, etc.), use standard CMake commands
-    add_library(hurricane ${HURRICANE_SRC_FILES})
-    target_include_directories(hurricane PUBLIC ${HURRICANE_INCLUDE_DIRS})
+    # For non-ESP platforms like lpc55s69, use standard CMake
+    
+    # Create hurricane static library
+    add_library(hurricane STATIC ${HURRICANE_SRCS})
+    
+    # Add include directories
+    target_include_directories(hurricane PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/usb
+        ${CMAKE_CURRENT_SOURCE_DIR}/core
+        ${CMAKE_CURRENT_SOURCE_DIR}/hw
+    )
 endif()
