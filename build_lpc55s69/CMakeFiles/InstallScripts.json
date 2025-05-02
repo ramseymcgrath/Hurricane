@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/cmake_install.cmake",
+		"/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/lib/hurricane/cmake_install.cmake",
+		"/Users/ramseymcgrath/code/Hurricane/build_lpc55s69/targets/lpc55s69/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
