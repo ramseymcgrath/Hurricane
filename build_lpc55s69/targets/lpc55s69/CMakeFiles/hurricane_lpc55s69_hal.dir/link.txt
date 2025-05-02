@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhurricane_lpc55s69_hal.a CMakeFiles/hurricane_lpc55s69_hal.dir/main.c.o
+/usr/bin/ranlib libhurricane_lpc55s69_hal.a
