@@ -39,15 +39,13 @@ target_link_libraries(${LPC55S69_TARGET_NAME}
 )
 
 # Create the HAL library for LPC55S69
-# Temporarily commenting out missing files for testing our fix
 add_library(hurricane_lpc55s69_hal
-    # Files below don't exist yet but are referenced in VSCode tabs
-    # ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_lpc55s69.c
-    # ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c
-    # ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c
-    # ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_init_lpc55s69.c
+    # HAL implementation files for LPC55S69
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_init_lpc55s69.c
     
-    # Using a dummy source file for testing
+    # Include main.c as a backup source file
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
 )
 
