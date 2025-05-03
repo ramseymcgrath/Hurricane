@@ -14,6 +14,17 @@ set(NXP_SDK_PATH "/Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk" CACHE PATH "
 option(USE_PACKAGED_SDK "Use a packaged version of the NXP SDK" OFF)
 set(NXP_SDK_PACKAGE_PATH "" CACHE PATH "Path to packaged NXP SDK (if not using direct SDK)")
 
+# Set PLATFORM from HURRICANE_TARGET_DEVICE if provided
+if(DEFINED HURRICANE_TARGET_DEVICE)
+    if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+        set(PLATFORM rt1060)
+    elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+        set(PLATFORM lpc55s69)
+    else()
+        set(PLATFORM dummy)
+    endif()
+endif()
+
 # Platform configuration
 if(NOT DEFINED PLATFORM)
     set(PLATFORM dummy)

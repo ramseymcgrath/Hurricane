@@ -65,7 +65,8 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
       ${EFFECTIVE_SDK_PATH}/components/lists
       ${EFFECTIVE_SDK_PATH}/drivers/common
-    )
+      ${EFFECTIVE_SDK_PATH}/drivers/gpio
+      )
     
   elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     set(NXP_SDK_INCLUDE_DIRS
@@ -84,6 +85,7 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
       ${EFFECTIVE_SDK_PATH}/components/lists
       ${EFFECTIVE_SDK_PATH}/drivers/common
+      ${EFFECTIVE_SDK_PATH}/drivers/gpio
     )
   else()
     message(FATAL_ERROR "Unsupported HURRICANE_TARGET_DEVICE: ${HURRICANE_TARGET_DEVICE}")
@@ -107,6 +109,7 @@ else()
     ${EFFECTIVE_SDK_PATH}/components/serial_manager
     ${EFFECTIVE_SDK_PATH}/components/lists
     ${EFFECTIVE_SDK_PATH}/drivers/common
+    ${EFFECTIVE_SDK_PATH}/drivers/gpio
   )
 endif()
 
@@ -118,16 +121,17 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_gpio.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
+    ${EFFECTIVE_SDK_PATH}/drivers/gpio/fsl_gpio.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
   set(NXP_SDK_CORE_SOURCES
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/system_LPC55S69_cm33_core0.c
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_gpio.c
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_power.c
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_reset.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
+    ${EFFECTIVE_SDK_PATH}/drivers/gpio/fsl_gpio.c
   )
 endif()
 
@@ -183,9 +187,6 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_clock.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
-  set(NXP_SDK_GPIO_SOURCES
-    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_gpio.c
-  )
 
   set(NXP_SDK_CLOCK_SOURCES
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
