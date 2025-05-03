@@ -1,7 +1,8 @@
 # LPC55S69 target with dual USB stack support
 cmake_minimum_required(VERSION 3.20)
 
-# Include NXP SDK integration script
+# Set target device and include NXP SDK integration script
+set(HURRICANE_TARGET_DEVICE "LPC55S69" CACHE STRING "NXP MCU device name")
 include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Source files for the LPC55S69 target
@@ -59,20 +60,18 @@ target_include_directories(hurricane_lpc55s69_hal PUBLIC
 )
 
 # Add NXP SDK components with more comprehensive list
-# We need to customize this for LPC55S69 instead of RT1060
-# Note: We may need to adapt the cmake/nxp_sdk.cmake script for LPC55S69 support
-# For now, we'll skip adding standard NXP components and only use our HAL
-# add_nxp_sdk_components(${LPC55S69_TARGET_NAME}
-#     USB_HOST
-#     USB_DEVICE
-#     USB_HID_HOST
-#     USB_HID_DEVICE
-#     GPIO
-#     CLOCK
-# )
+# Now using our updated nxp_sdk.cmake script with LPC55S69 support
+add_nxp_sdk_components(${LPC55S69_TARGET_NAME}
+    USB_HOST
+    USB_DEVICE
+    USB_HID_HOST
+    USB_HID_DEVICE
+    GPIO
+    CLOCK
+)
 
-# Generate NXP SDK configuration headers - disabled for now
-# generate_nxp_sdk_config(${LPC55S69_TARGET_NAME})
+# Generate NXP SDK configuration headers
+generate_nxp_sdk_config(${LPC55S69_TARGET_NAME})
 
 # LPC55S69-specific compiler options
 target_compile_options(${LPC55S69_TARGET_NAME} PRIVATE

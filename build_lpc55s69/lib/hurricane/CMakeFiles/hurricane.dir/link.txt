@@ -1,2 +1,0 @@
-/usr/bin/ar qc libhurricane.a CMakeFiles/hurricane.dir/usb/usb_control.c.o CMakeFiles/hurricane.dir/usb/usb_hid.c.o CMakeFiles/hurricane.dir/core/hurricane_usb.c.o
-/usr/bin/ranlib libhurricane.a

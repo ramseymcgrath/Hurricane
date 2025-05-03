@@ -7,7 +7,7 @@
 option(ENABLE_USB_HOST "Enable USB Host stack" ON)
 option(ENABLE_USB_DEVICE "Enable USB Device stack" ON)
 option(ENABLE_DUAL_USB "Enable dual USB stack (Host and Device simultaneously)" ON)
-set(NXP_SDK_PATH "" CACHE PATH "Path to NXP MCUXpresso SDK")
+set(NXP_SDK_PATH "/Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk" CACHE PATH "Path to NXP MCUXpresso SDK")
 
 # Package options
 option(USE_PACKAGED_SDK "Use a packaged version of the NXP SDK" OFF)
@@ -46,29 +46,90 @@ else()
   message(WARNING "Could not determine NXP SDK version. Continuing anyway.")
 endif()
 
-# Set SDK include directories with more comprehensive paths
-set(NXP_SDK_INCLUDE_DIRS
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/drivers
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/utilities/debug_console
-  ${EFFECTIVE_SDK_PATH}/middleware/usb
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/include
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host
-  ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
-  ${EFFECTIVE_SDK_PATH}/components/uart
-  ${EFFECTIVE_SDK_PATH}/components/serial_manager
-  ${EFFECTIVE_SDK_PATH}/components/lists
-)
+# Set SDK include directories with more comprehensive paths for the selected device
+if(DEFINED HURRICANE_TARGET_DEVICE)
+  if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+    set(NXP_SDK_INCLUDE_DIRS
+      ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060
+      ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers
+      ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/utilities/debug_console
+      ${EFFECTIVE_SDK_PATH}/middleware/usb
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/include
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/device
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/host
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class
+      ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
+      ${EFFECTIVE_SDK_PATH}/components/uart
+      ${EFFECTIVE_SDK_PATH}/components/serial_manager
+      ${EFFECTIVE_SDK_PATH}/components/lists
+      ${EFFECTIVE_SDK_PATH}/drivers/common
+    )
+    
+  elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+    set(NXP_SDK_INCLUDE_DIRS
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities/debug_console
+      ${EFFECTIVE_SDK_PATH}/middleware/usb
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/include
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/device
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/host
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class
+      ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class
+      ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
+      ${EFFECTIVE_SDK_PATH}/components/uart
+      ${EFFECTIVE_SDK_PATH}/components/serial_manager
+      ${EFFECTIVE_SDK_PATH}/components/lists
+      ${EFFECTIVE_SDK_PATH}/drivers/common
+    )
+  else()
+    message(FATAL_ERROR "Unsupported HURRICANE_TARGET_DEVICE: ${HURRICANE_TARGET_DEVICE}")
+  endif()
+else()
+  # Default to RT1062 if no device is specified
+  set(HURRICANE_TARGET_DEVICE "MIMXRT1062")
+  set(NXP_SDK_INCLUDE_DIRS
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/utilities/debug_console
+    ${EFFECTIVE_SDK_PATH}/middleware/usb
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/include
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/device
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/host
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class
+    ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
+    ${EFFECTIVE_SDK_PATH}/components/uart
+    ${EFFECTIVE_SDK_PATH}/components/serial_manager
+    ${EFFECTIVE_SDK_PATH}/components/lists
+    ${EFFECTIVE_SDK_PATH}/drivers/common
+  )
+endif()
 
-# Set SDK core system sources
-set(NXP_SDK_CORE_SOURCES
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/system_MIMXRT1062.c
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/drivers/fsl_clock.c
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/drivers/fsl_common.c
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/drivers/fsl_gpio.c
-)
+# Set SDK core system sources based on target device
+if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+  set(NXP_SDK_CORE_SOURCES
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/system_MIMXRT1062.c
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_clock.c
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_gpio.c
+    ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
+    ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
+  )
+elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+  set(NXP_SDK_CORE_SOURCES
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/system_LPC55S69_cm33_core0.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_gpio.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_power.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_reset.c
+    ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
+    ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
+  )
+endif()
 
 # Set SDK USB common sources
 set(NXP_SDK_USB_COMMON_SOURCES
@@ -78,11 +139,20 @@ set(NXP_SDK_USB_COMMON_SOURCES
 
 # Set SDK USB device sources
 set(NXP_SDK_USB_DEVICE_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device.c
   ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_ch9.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_ehci.c
   ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class/usb_device_class.c
 )
+
+# Add device controller based on target
+if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+  list(APPEND NXP_SDK_USB_DEVICE_SOURCES
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_ehci.c
+  )
+elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+  list(APPEND NXP_SDK_USB_DEVICE_SOURCES
+    ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_lpcip3511.c
+  )
+endif()
 
 # Set SDK USB host sources
 set(NXP_SDK_USB_HOST_SOURCES
@@ -100,17 +170,28 @@ set(NXP_SDK_USB_HID_HOST_SOURCES
 )
 
 set(NXP_SDK_USB_HID_DEVICE_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class/hid/usb_device_hid.c
+  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class/usb_device_hid.c
 )
 
-# Additional SDK components
-set(NXP_SDK_GPIO_SOURCES
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/drivers/fsl_gpio.c
-)
+# Additional SDK components for different targets
+if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+  set(NXP_SDK_GPIO_SOURCES
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_gpio.c
+  )
 
-set(NXP_SDK_CLOCK_SOURCES
-  ${EFFECTIVE_SDK_PATH}/devices/MIMXRT1062/drivers/fsl_clock.c
-)
+  set(NXP_SDK_CLOCK_SOURCES
+    ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_clock.c
+  )
+elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+  set(NXP_SDK_GPIO_SOURCES
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_gpio.c
+  )
+
+  set(NXP_SDK_CLOCK_SOURCES
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_power.c
+  )
+endif()
 
 # Function to add NXP SDK components to a target
 function(add_nxp_sdk_components TARGET)
@@ -190,14 +271,24 @@ function(add_nxp_sdk_components TARGET)
   # Add all source files to the target
   target_sources(${TARGET} PRIVATE ${COMPONENT_SOURCES})
   
-  # Add necessary compiler definitions
-  target_compile_definitions(${TARGET} PRIVATE
-    CPU_MIMXRT1062DVL6A
-    USB_STACK_BM
-    SDK_DEVICE_FAMILY=MIMXRT1062
-    FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL=1
-    PRINTF_ADVANCED_ENABLE=1
-  )
+  # Add necessary compiler definitions for the specified device
+  if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+    target_compile_definitions(${TARGET} PRIVATE
+      CPU_MIMXRT1062DVL6A
+      USB_STACK_BM
+      SDK_DEVICE_FAMILY=MIMXRT1062
+      FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL=1
+      PRINTF_ADVANCED_ENABLE=1
+    )
+  elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+    target_compile_definitions(${TARGET} PRIVATE
+      CPU_LPC55S69JBD100
+      USB_STACK_BM
+      SDK_DEVICE_FAMILY=LPC55S69
+      FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL=1
+      PRINTF_ADVANCED_ENABLE=1
+    )
+  endif()
   
   # Set SDK configurations based on dual USB stack option
   if(ENABLE_USB_HOST AND ENABLE_USB_DEVICE AND ENABLE_DUAL_USB)
@@ -296,9 +387,9 @@ macro(find_sdk_component COMPONENT_NAME COMPONENT_PATH RESULT_VAR)
 endmacro()
 
 # Verify critical SDK components exist
-find_sdk_component("USB Device Stack" "middleware/usb/device/usb_device.c" USB_DEVICE_FOUND)
-find_sdk_component("USB Host Stack" "middleware/usb/host/usb_host.c" USB_HOST_FOUND)
-find_sdk_component("USB HID Device Class" "middleware/usb/device/class/hid/usb_device_hid.c" USB_HID_DEVICE_FOUND)
+find_sdk_component("USB Device Stack" "middleware/usb/device/usb_device_dci.c" USB_DEVICE_FOUND)
+find_sdk_component("USB Host Stack" "middleware/usb/host/usb_host_hci.c" USB_HOST_FOUND)
+find_sdk_component("USB HID Device Class" "middleware/usb/device/class/usb_device_hid.c" USB_HID_DEVICE_FOUND)
 find_sdk_component("USB HID Host Class" "middleware/usb/host/class/usb_host_hid.c" USB_HID_HOST_FOUND)
 
 if(NOT USB_DEVICE_FOUND AND ENABLE_USB_DEVICE)
