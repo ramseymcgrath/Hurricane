@@ -7,6 +7,9 @@ TARGET        = hurricane_app
 TEST_TARGET   = hurricane_tests
 BUILD_DIR     = build
 
+# NXP SDK path for RT1060 and LPC55S69 targets
+NXP_SDK_PATH   = /Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk
+
 # === Source Dirs ===
 HURRICANE_DIR = lib/hurricane
 CORE_DIR      = $(HURRICANE_DIR)/core
@@ -68,7 +71,7 @@ SRC_FILES      = $(CORE_SRC_FILES) $(USB_SRC_FILES) $(HW_FILES) $(HAL_FILES)
 OBJ_FILES = $(SRC_FILES:%.c=$(BUILD_DIR)/%.o)
 
 # === Targets ===
-.PHONY: all clean test production run_tests coverage
+.PHONY: all clean test production run_tests coverage build_rt1060 build_lpc55s69
 
 all: production
 
@@ -83,6 +86,19 @@ test: BOARD=dummy
 test: $(OBJ_FILES) $(TEST_DIR)/test_runner.c $(wildcard $(TEST_DIR)/unit/*.c) $(wildcard $(TEST_DIR)/common/*.c)
 	@echo " Linking $@ (tests)"
 	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ_FILES) $(TEST_DIR)/test_runner.c $(wildcard $(TEST_DIR)/unit/*.c) $(wildcard $(TEST_DIR)/common/*.c) -o $(TEST_TARGET)
+
+# === CMake-based targets using the NXP SDK ===
+build_rt1060:
+	@echo "Building RT1060 target with NXP SDK..."
+	@mkdir -p build_rt1060
+	@cd build_rt1060 && cmake -DNXP_SDK_PATH=$(NXP_SDK_PATH) -DHURRICANE_TARGET_DEVICE=MIMXRT1062 ..
+	@cmake --build build_rt1060
+
+build_lpc55s69:
+	@echo "Building LPC55S69 target with NXP SDK..."
+	@mkdir -p build_lpc55s69
+	@cd build_lpc55s69 && cmake -DNXP_SDK_PATH=$(NXP_SDK_PATH) -DHURRICANE_TARGET_DEVICE=LPC55S69 ..
+	@cmake --build build_lpc55s69
 
 run_tests: test
 	@./$(TEST_TARGET)
@@ -100,4 +116,4 @@ $(BUILD_DIR)/%.o: %.c
 	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET) $(TEST_TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET) $(TEST_TARGET) build_rt1060 build_lpc55s69

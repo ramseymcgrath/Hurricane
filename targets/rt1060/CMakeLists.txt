@@ -1,7 +1,8 @@
 # RT1060 target with dual USB stack support
 cmake_minimum_required(VERSION 3.20)
 
-# Include NXP SDK integration script
+# Set target device and include NXP SDK integration script
+set(HURRICANE_TARGET_DEVICE "MIMXRT1062" CACHE STRING "NXP MCU device name")
 include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Source files for the RT1060 target

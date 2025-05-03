@@ -10,9 +10,20 @@ option(ENABLE_DUAL_USB "Enable dual USB stack support" ON)
 option(BUILD_EXAMPLES "Build example applications" ON)
 
 # NXP SDK path configuration
-set(NXP_SDK_PATH "" CACHE PATH "Path to NXP MCUXpresso SDK")
+set(NXP_SDK_PATH "/Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk" CACHE PATH "Path to NXP MCUXpresso SDK")
 option(USE_PACKAGED_SDK "Use a packaged version of the NXP SDK" OFF)
 set(NXP_SDK_PACKAGE_PATH "" CACHE PATH "Path to packaged NXP SDK (if not using direct SDK)")
+
+# Set PLATFORM from HURRICANE_TARGET_DEVICE if provided
+if(DEFINED HURRICANE_TARGET_DEVICE)
+    if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
+        set(PLATFORM rt1060)
+    elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+        set(PLATFORM lpc55s69)
+    else()
+        set(PLATFORM dummy)
+    endif()
+endif()
 
 # Platform configuration
 if(NOT DEFINED PLATFORM)
@@ -26,11 +37,26 @@ message(STATUS "Dual USB stack: ${ENABLE_DUAL_USB}")
 # Set target-specific variables
 if(PLATFORM STREQUAL "rt1060")
     set(TARGET "rt1060")
+    set(HURRICANE_TARGET_DEVICE "MIMXRT1062" CACHE STRING "NXP MCU device name")
     message(STATUS "Building for RT1060 target")
     
     # Verify NXP SDK path is provided for RT1060 builds
     if(NOT NXP_SDK_PATH AND NOT USE_PACKAGED_SDK)
         message(FATAL_ERROR "NXP_SDK_PATH is required for RT1060 builds. Please specify -DNXP_SDK_PATH=<path to SDK>")
+    elseif(USE_PACKAGED_SDK AND NOT NXP_SDK_PACKAGE_PATH)
+        message(FATAL_ERROR "NXP_SDK_PACKAGE_PATH is required when USE_PACKAGED_SDK=ON. Please specify -DNXP_SDK_PACKAGE_PATH=<path to packaged SDK>")
+    endif()
+    
+    # Include NXP SDK integration script for global configuration
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/nxp_sdk.cmake)
+elseif(PLATFORM STREQUAL "lpc55s69")
+    set(TARGET "lpc55s69")
+    set(HURRICANE_TARGET_DEVICE "LPC55S69" CACHE STRING "NXP MCU device name")
+    message(STATUS "Building for LPC55S69 target")
+    
+    # Verify NXP SDK path is provided for LPC55S69 builds
+    if(NOT NXP_SDK_PATH AND NOT USE_PACKAGED_SDK)
+        message(FATAL_ERROR "NXP_SDK_PATH is required for LPC55S69 builds. Please specify -DNXP_SDK_PATH=<path to SDK>")
     elseif(USE_PACKAGED_SDK AND NOT NXP_SDK_PACKAGE_PATH)
         message(FATAL_ERROR "NXP_SDK_PACKAGE_PATH is required when USE_PACKAGED_SDK=ON. Please specify -DNXP_SDK_PACKAGE_PATH=<path to packaged SDK>")
     endif()
