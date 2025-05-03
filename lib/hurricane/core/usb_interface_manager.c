@@ -371,6 +371,29 @@ void hurricane_interface_notify_event(
     uint8_t interface_num,
     void* event_data)
 {
+    // Call the extended version without a response callback
+    hurricane_interface_notify_event_with_response(event, interface_num, event_data, NULL);
+}
+
+/**
+ * @brief Extended notify events function with response callback for control requests
+ *
+ * This function extends hurricane_interface_notify_event to include a response callback
+ * for control requests. This allows the device HAL to wait for responses to control
+ * requests.
+ *
+ * @param event Event type
+ * @param interface_num Interface number
+ * @param event_data Event data
+ * @param response_cb Callback for control request responses (can be NULL for no callback)
+ * @return true if handled synchronously, false if response will be async or not handled
+ */
+bool hurricane_interface_notify_event_with_response(
+    hurricane_usb_event_t event,
+    uint8_t interface_num,
+    void* event_data,
+    void (*response_cb)(uint8_t interface_num, bool handled, void* buffer, uint16_t length))
+{
     pthread_mutex_lock(&interface_manager_mutex);
     printf("[Interface Manager] Event %d on interface %d\n", event, interface_num);
     
@@ -381,11 +404,36 @@ void hurricane_interface_notify_event(
             hurricane_usb_setup_packet_t* setup = (hurricane_usb_setup_packet_t*)event_data;
             uint16_t length = setup->wLength;
             
-            // Call the control handler
-            bool handled = interface->descriptor.control_handler(setup, NULL, &length);
+            // Buffer for response data - allocate dynamically based on request size
+            uint8_t* response_buffer = NULL;
+            if (setup->wLength > 0 && (setup->bmRequestType & 0x80)) { // Device-to-host
+                response_buffer = malloc(setup->wLength);
+                if (!response_buffer) {
+                    printf("[Interface Manager] Error: Failed to allocate response buffer\n");
+                    pthread_mutex_unlock(&interface_manager_mutex);
+                    return false;
+                }
+            }
             
-            printf("[Interface Manager] Control request %s by interface %d handler\n", 
+            // Call the control handler
+            bool handled = interface->descriptor.control_handler(setup, response_buffer, &length);
+            
+            printf("[Interface Manager] Control request %s by interface %d handler\n",
                    handled ? "handled" : "not handled", interface_num);
+                   
+            // If we have a callback, invoke it with the response
+            if (response_cb && handled) {
+                response_cb(interface_num, handled, response_buffer, length);
+            }
+            
+            // Free the response buffer
+            if (response_buffer) {
+                free(response_buffer);
+            }
+            
+            // Return whether the request was handled
+            pthread_mutex_unlock(&interface_manager_mutex);
+            return handled;
         }
     }
     

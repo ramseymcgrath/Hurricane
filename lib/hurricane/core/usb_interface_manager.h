@@ -227,6 +227,26 @@ void hurricane_interface_notify_event(
 );
 
 /**
+ * @brief Extended notify events function with response callback for control requests
+ *
+ * This function extends hurricane_interface_notify_event to include a response callback
+ * for control requests. This allows the device HAL to wait for responses to control
+ * requests.
+ *
+ * @param event Event type
+ * @param interface_num Interface number
+ * @param event_data Event data
+ * @param response_cb Callback for control request responses (can be NULL for no callback)
+ * @return true if handled synchronously, false if response will be async or not handled
+ */
+bool hurricane_interface_notify_event_with_response(
+    hurricane_usb_event_t event,
+    uint8_t interface_num,
+    void* event_data,
+    void (*response_cb)(uint8_t interface_num, bool handled, void* buffer, uint16_t length)
+);
+
+/**
  * @brief Update device descriptors at runtime
  * 
  * @param descriptors Pointer to device descriptors structure

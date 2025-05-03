@@ -123,6 +123,7 @@ static hid_config_t hid_configs[] = {
 // State tracking
 static bool device_connected = false;
 static bool interfaces_configured = false;
+static uint8_t current_keyboard_led_state = 0; // For tracking keyboard LED status
 
 // Callback function for HID control requests
 static bool hid_control_callback(hurricane_usb_setup_packet_t* setup, void* buffer, uint16_t* length);
@@ -191,6 +192,7 @@ void device_config_deinit(void)
     
     interfaces_configured = false;
     device_connected = false;
+    current_keyboard_led_state = 0; // Reset the keyboard LED state
     
     printf("[LPC55S69-Device Config] Device configuration deinitialized\n");
 }
@@ -425,8 +427,48 @@ static bool hid_control_callback(hurricane_usb_setup_packet_t* setup, void* buff
         
         // Handle SET_REPORT request
         if (setup->bRequest == 0x09) { // SET_REPORT
-            // Process incoming report from host
-            return true;
+                    uint8_t report_type = setup->wValue >> 8;  // 1 = Input, 2 = Output, 3 = Feature
+                    uint8_t report_id = setup->wValue & 0xFF;
+                    
+                    printf("[LPC55S69-Device Config] SET_REPORT: type %d, id %d, length %d\n",
+                           report_type, report_id, setup->wLength);
+                    
+                    // Use the file-scope variable to track keyboard LED state
+                    
+                    // Report type 2 is an Output report - used for keyboard LEDs
+                    if (report_type == 0x02 && setup->wLength > 0 && buffer) {
+                        // For keyboard (interface 1), this would be LED state
+                        if (interface_num == hid_configs[1].interface_num) {
+                            uint8_t led_state = *((uint8_t*)buffer);
+                            
+                            // Only log and process if LED state has changed
+                            if (led_state != current_keyboard_led_state) {
+                                printf("[LPC55S69-Device Config] Received keyboard LED state: 0x%02X\n", led_state);
+                                printf("  NUM Lock: %s, CAPS Lock: %s, SCROLL Lock: %s\n",
+                                       (led_state & 0x01) ? "ON" : "off",
+                                       (led_state & 0x02) ? "ON" : "off",
+                                       (led_state & 0x04) ? "ON" : "off");
+                                
+                                // Update our tracked state
+                                current_keyboard_led_state = led_state;
+                                
+                                // Define a function pointer type for keyboard LED callback
+                                typedef void (*keyboard_led_callback_t)(uint8_t);
+                                
+                                // Call external handler if defined (main.c will define this)
+                                extern keyboard_led_callback_t g_keyboard_led_callback;
+                                if (g_keyboard_led_callback) {
+                                    printf("[LPC55S69-Device Config] Forwarding LED state to physical keyboard\n");
+                                    g_keyboard_led_callback(led_state);
+                                }
+                            }
+                        }
+                    } else if (report_type == 0x03) {
+                        // Handle Feature reports if needed
+                        printf("[LPC55S69-Device Config] Feature report not implemented\n");
+                    }
+                    
+                    return true;
         }
         
         // Handle SET_IDLE request

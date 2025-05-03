@@ -35,6 +35,15 @@ static app_state_t app_state = APP_STATE_INIT;
 // Callback function for HID reports from host mode
 static void hid_report_callback(const hid_report_data_t* report);
 
+// Callback function for keyboard LED state changes from device mode
+static void keyboard_led_callback(uint8_t led_state);
+
+// Callback function type for keyboard LED state changes
+typedef void (*keyboard_led_callback_t)(uint8_t);
+
+// Global callback variable - used by device_config.c
+keyboard_led_callback_t g_keyboard_led_callback = NULL;
+
 // Configuration callbacks
 static void set_configuration_callback(uint8_t configuration);
 static void set_interface_callback(uint8_t interface, uint8_t alt_setting);
@@ -75,6 +84,9 @@ static bool app_init(void)
     
     // Register callback for host HID report reception
     host_handler_register_report_callback(hid_report_callback);
+    
+    // Register callback for keyboard LED state changes
+    g_keyboard_led_callback = keyboard_led_callback;
     
     printf("\n[Main] Dual USB initialization complete\n");
     printf("* Device mode (USB0): Composite HID (Mouse + Keyboard)\n");
@@ -193,6 +205,32 @@ static void set_interface_callback(uint8_t interface, uint8_t alt_setting)
 }
 
 /**
+ * Callback for keyboard LED state changes from device mode
+ *
+ * This handles bidirectional communication by forwarding LED state
+ * changes from the host connected to our device mode (USB0)
+ * to the keyboard connected to our host mode (USB1)
+ */
+static void keyboard_led_callback(uint8_t led_state)
+{
+    printf("[Main] Forwarding keyboard LED state: 0x%02X to physical keyboard\n", led_state);
+    
+    // Only forward if we have a device connected to the host controller
+    if (host_handler_is_device_connected()) {
+        // Get device info to make sure it's a keyboard
+        usb_device_info_t device_info;
+        if (host_handler_get_device_info(&device_info)) {
+            if (device_info.device_protocol == 1 || device_info.is_hid) { // Keyboard or HID device
+                // Send LED state to the physical keyboard
+                if (!host_handler_set_keyboard_leds(led_state)) {
+                    printf("[Main] Failed to forward LED state to physical keyboard\n");
+                }
+            }
+        }
+    }
+}
+
+/**
  * Callback for HID reports received in host mode
  */
 static void hid_report_callback(const hid_report_data_t* report)
@@ -200,15 +238,74 @@ static void hid_report_callback(const hid_report_data_t* report)
     if (!report) return;
     
     // Display basic report information
-    printf("[Main] Received HID report: ID: %d, Length: %d\n", 
+    printf("[Main] Received HID report: ID: %d, Length: %d\n",
            report->report_id, report->length);
     
-    // For keyboard reports, we might want to change keyboard LEDs based on state
-    // This demonstrates bidirectional communication with a HID device
+    // Check if we're connected to the device controller
+    if (!device_config_is_connected()) {
+        printf("[Main] Device controller not connected to a host, not relaying report\n");
+        return;
+    }
     
-    // For mouse reports, we could process the movement data
+    // We need device information to determine report type
+    usb_device_info_t device_info;
+    if (!host_handler_get_device_info(&device_info)) {
+        printf("[Main] Failed to get device info, cannot relay HID report\n");
+        return;
+    }
     
-    // Example: relay certain HID reports to the device mode
-    // This would allow creating a HID proxy where data from a physical
-    // device is transformed and sent to the host connected to our device controller
+    // Process based on device protocol or report size/format
+    if (device_info.device_protocol == 2 || // Mouse protocol
+        (report->length >= 3 && report->length <= 4)) { // Typical mouse report length
+        
+        // Parse mouse report data - typically [buttons, x, y, wheel(optional)]
+        uint8_t buttons = report->data[0];
+        int8_t dx = (int8_t)report->data[1];
+        int8_t dy = (int8_t)report->data[2];
+        
+        printf("[Main] Relaying mouse report: buttons=0x%02X, dx=%d, dy=%d\n",
+               buttons, dx, dy);
+        
+        // Send report to device controller (USB0)
+        int result = device_config_send_mouse_report(dx, dy, buttons);
+        if (result != 0) {
+            printf("[Main] Failed to relay mouse report, error %d\n", result);
+        }
+    }
+    else if (device_info.device_protocol == 1 || // Keyboard protocol
+             (report->length >= 8)) { // Typical keyboard report length
+        
+        // Parse keyboard report data - typically [modifier, reserved, key1, key2, key3, key4, key5, key6]
+        uint8_t modifier = report->data[0];
+        uint8_t keycodes[6]; // Maximum 6 keys in standard HID keyboard report
+        
+        // Copy key codes, starting from byte 2 (skipping modifier and reserved bytes)
+        // Ensure we don't exceed report length or the 6-key limit
+        size_t key_bytes = report->length - 2 > 6 ? 6 : report->length - 2;
+        if (key_bytes > 0) {
+            memcpy(keycodes, &report->data[2], key_bytes);
+        }
+        
+        // Zero out any remaining key slots
+        for (size_t i = key_bytes; i < 6; i++) {
+            keycodes[i] = 0;
+        }
+        
+        printf("[Main] Relaying keyboard report: modifier=0x%02X, keys=[0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X]\n",
+               modifier, keycodes[0], keycodes[1], keycodes[2], keycodes[3], keycodes[4], keycodes[5]);
+        
+        // Send report to device controller (USB0)
+        int result = device_config_send_keyboard_report(modifier, keycodes);
+        if (result != 0) {
+            printf("[Main] Failed to relay keyboard report, error %d\n", result);
+        }
+        
+        // For bidirectional communication, monitor changes in LED state
+        // This would be handled by the device controller callbacks
+        // The host_handler_set_keyboard_leds() function would be called
+        // when the host (connected to USB0) changes the LED state
+    }
+    else {
+        printf("[Main] Unknown HID report format, cannot relay\n");
+    }
 }

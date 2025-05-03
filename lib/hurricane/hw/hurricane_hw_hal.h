@@ -108,6 +108,20 @@ int hurricane_hw_host_interrupt_in_transfer(
     uint16_t length
 );
 
+/**
+ * @brief Perform a USB interrupt OUT transfer in host mode
+ *
+ * @param endpoint Endpoint address
+ * @param buffer Data buffer
+ * @param length Length of data buffer
+ * @return Number of bytes transferred, or negative error code
+ */
+int hurricane_hw_host_interrupt_out_transfer(
+    uint8_t endpoint,
+    void* buffer,
+    uint16_t length
+);
+
 //=============================================================================
 // Device mode functions
 //=============================================================================
@@ -313,3 +327,4 @@ int hurricane_hw_device_endpoint_stall(
 #define hurricane_hw_reset_bus hurricane_hw_host_reset_bus
 #define hurricane_hw_control_transfer hurricane_hw_host_control_transfer
 #define hurricane_hw_interrupt_in_transfer hurricane_hw_host_interrupt_in_transfer
+#define hurricane_hw_interrupt_out_transfer hurricane_hw_host_interrupt_out_transfer
