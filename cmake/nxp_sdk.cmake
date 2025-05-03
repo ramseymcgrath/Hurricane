@@ -46,6 +46,11 @@ else()
   message(WARNING "Could not determine NXP SDK version. Continuing anyway.")
 endif()
 
+# Set USB middleware path, defaulting to /Users/ramseymcgrath/code/mcuxsdk-middleware-usb if not set
+if(NOT DEFINED NXP_USB_MIDDLEWARE_PATH)
+  set(NXP_USB_MIDDLEWARE_PATH "/Users/ramseymcgrath/code/mcuxsdk-middleware-usb")
+endif()
+
 # Set SDK include directories with more comprehensive paths for the selected device
 if(DEFINED HURRICANE_TARGET_DEVICE)
   if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
@@ -53,13 +58,13 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060
       ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers
       ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/utilities/debug_console
-      ${EFFECTIVE_SDK_PATH}/middleware/usb
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/include
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/device
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/host
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class
+      ${NXP_USB_MIDDLEWARE_PATH}
+      ${NXP_USB_MIDDLEWARE_PATH}/include
+      ${NXP_USB_MIDDLEWARE_PATH}/phy
+      ${NXP_USB_MIDDLEWARE_PATH}/device
+      ${NXP_USB_MIDDLEWARE_PATH}/host
+      ${NXP_USB_MIDDLEWARE_PATH}/device/class
+      ${NXP_USB_MIDDLEWARE_PATH}/host/class
       ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
       ${EFFECTIVE_SDK_PATH}/components/uart
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
@@ -73,13 +78,13 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities/debug_console
-      ${EFFECTIVE_SDK_PATH}/middleware/usb
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/include
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/device
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/host
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class
-      ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class
+      ${NXP_USB_MIDDLEWARE_PATH}
+      ${NXP_USB_MIDDLEWARE_PATH}/include
+      ${NXP_USB_MIDDLEWARE_PATH}/phy
+      ${NXP_USB_MIDDLEWARE_PATH}/device
+      ${NXP_USB_MIDDLEWARE_PATH}/host
+      ${NXP_USB_MIDDLEWARE_PATH}/device/class
+      ${NXP_USB_MIDDLEWARE_PATH}/host/class
       ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
       ${EFFECTIVE_SDK_PATH}/components/uart
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
@@ -97,13 +102,13 @@ else()
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/utilities/debug_console
-    ${EFFECTIVE_SDK_PATH}/middleware/usb
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/include
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/phy
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/device
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/host
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class
+    ${NXP_USB_MIDDLEWARE_PATH}
+    ${NXP_USB_MIDDLEWARE_PATH}/include
+    ${NXP_USB_MIDDLEWARE_PATH}/phy
+    ${NXP_USB_MIDDLEWARE_PATH}/device
+    ${NXP_USB_MIDDLEWARE_PATH}/host
+    ${NXP_USB_MIDDLEWARE_PATH}/device/class
+    ${NXP_USB_MIDDLEWARE_PATH}/host/class
     ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
     ${EFFECTIVE_SDK_PATH}/components/uart
     ${EFFECTIVE_SDK_PATH}/components/serial_manager
@@ -137,44 +142,44 @@ endif()
 
 # Set SDK USB common sources
 set(NXP_SDK_USB_COMMON_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/phy/usb_phy.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_dci.c
+  ${NXP_USB_MIDDLEWARE_PATH}/phy/usb_phy.c
+  ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_dci.c
 )
 
 # Set SDK USB device sources
 set(NXP_SDK_USB_DEVICE_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_ch9.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class/usb_device_class.c
+  ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_ch9.c
+  ${NXP_USB_MIDDLEWARE_PATH}/device/class/usb_device_class.c
 )
 
 # Add device controller based on target
 if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
   list(APPEND NXP_SDK_USB_DEVICE_SOURCES
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_ehci.c
+    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_ehci.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
   list(APPEND NXP_SDK_USB_DEVICE_SOURCES
-    ${EFFECTIVE_SDK_PATH}/middleware/usb/device/usb_device_lpcip3511.c
+    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
   )
 endif()
 
 # Set SDK USB host sources
 set(NXP_SDK_USB_HOST_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/usb_host.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/usb_host_devices.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/usb_host_ehci.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/usb_host_framework.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class/usb_host_hub.c
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class/usb_host_hub_app.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_devices.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_ehci.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_framework.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/class/usb_host_hub.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/class/usb_host_hub_app.c
 )
 
 # Set SDK USB HID class sources
 set(NXP_SDK_USB_HID_HOST_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/host/class/usb_host_hid.c
+  ${NXP_USB_MIDDLEWARE_PATH}/host/class/usb_host_hid.c
 )
 
 set(NXP_SDK_USB_HID_DEVICE_SOURCES
-  ${EFFECTIVE_SDK_PATH}/middleware/usb/device/class/usb_device_hid.c
+  ${NXP_USB_MIDDLEWARE_PATH}/device/class/usb_device_hid.c
 )
 
 # Additional SDK components for different targets
