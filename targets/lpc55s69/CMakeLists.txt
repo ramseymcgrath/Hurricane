@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.20)
 
 # Set target device and include NXP SDK integration script
 set(HURRICANE_TARGET_DEVICE "LPC55S69" CACHE STRING "NXP MCU device name")
+# Target must be defined before SDK configuration
+add_executable(hurricane_lpc55s69 main.c)
 include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Source files for the LPC55S69 target
@@ -25,6 +27,11 @@ target_include_directories(${LPC55S69_TARGET_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/lib/hurricane/core
     ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
     ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/device
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
 )
 
 # Linker script
@@ -55,6 +62,11 @@ target_include_directories(hurricane_lpc55s69_hal PUBLIC
     ${CMAKE_SOURCE_DIR}/lib/hurricane/core
     ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
     ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/device
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
 )
 
 # Add NXP SDK components with more comprehensive list

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 // C99 boolean support
 #include <stdbool.h>
 
@@ -22,7 +23,7 @@ static int usb_find_hid_interface(uint8_t* buffer, uint16_t len, uint8_t* interf
 
 void usb_host_init(void)
 {
-    device.state = DEVICE_STATE_DEFAULT;
+    device.state = kUSB_DeviceStateConfigured;
     device.device_address = 0;
     
     hurricane_hw_reset_bus(); // Reset the USB bus
@@ -33,22 +34,20 @@ void usb_host_poll(void)
 {
     switch (device.state)
     {
-        case DEVICE_STATE_DEFAULT:
+        case kUSB_DeviceStateDefault:
             printf("[host] Setting device address...\n");
             if (usb_control_set_address(1) != 0) {
                 printf("[host] Error setting device address.\n");
-                device.state = DEVICE_STATE_ERROR;
                 break;
             }
             device.device_address = 1;
-            device.state = DEVICE_STATE_ADDRESS;
+            device.state = kUSB_DeviceStateAddress;
             break;
 
-        case DEVICE_STATE_ADDRESS:
+        case kUSB_DeviceStateAddress:
             printf("[host] Fetching device descriptor...\n");
             if (usb_control_get_device_descriptor(device.device_address, &device.device_desc) != 0) {
                 printf("[host] Error fetching device descriptor.\n");
-                device.state = DEVICE_STATE_ERROR;
                 break;
             }
             
@@ -56,7 +55,6 @@ void usb_host_poll(void)
             printf("[host] Fetching configuration descriptor...\n");
             if (usb_get_config_descriptor(0) != 0) {
                 printf("[host] Error fetching configuration descriptor.\n");
-                device.state = DEVICE_STATE_ERROR;
                 break;
             }
             
@@ -64,14 +62,13 @@ void usb_host_poll(void)
             printf("[host] Setting configuration...\n");
             if (usb_set_configuration(1) != 0) {
                 printf("[host] Error setting configuration.\n");
-                device.state = DEVICE_STATE_ERROR;
                 break;
             }
             
-            device.state = DEVICE_STATE_CONFIGURED;
+            device.state = kUSB_DeviceStateConfigured;
             break;
 
-        case DEVICE_STATE_CONFIGURED:
+        case kUSB_DeviceStateConfigured:
             // Device is configured, handle class-specific tasks
             // If HID interface was found, poll it
             if (device.hid_configured) {
@@ -83,11 +80,10 @@ void usb_host_poll(void)
             }
             break;
 
-        case DEVICE_STATE_ERROR:
         default:
             printf("[host] Device in error state. Resetting...\n");
             hurricane_hw_reset_bus();
-            device.state = DEVICE_STATE_DEFAULT;
+            device.state = kUSB_DeviceStateDefault;
             break;
     }
 }

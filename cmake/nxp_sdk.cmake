@@ -48,7 +48,7 @@ endif()
 
 # Set USB middleware path, defaulting to /Users/ramseymcgrath/code/mcuxsdk-middleware-usb if not set
 if(NOT DEFINED NXP_USB_MIDDLEWARE_PATH)
-  set(NXP_USB_MIDDLEWARE_PATH "/Users/ramseymcgrath/code/mcuxsdk-middleware-usb")
+  set(NXP_USB_MIDDLEWARE_PATH "${EFFECTIVE_SDK_PATH}/middleware/usb")
 endif()
 
 # Set SDK include directories with more comprehensive paths for the selected device
@@ -75,23 +75,43 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
     
   elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     set(NXP_SDK_INCLUDE_DIRS
-      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
-      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
-      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities/debug_console
+      ${EFFECTIVE_SDK_PATH}/devices/LPC55S69
+      ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers
+      ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/utilities
       ${NXP_USB_MIDDLEWARE_PATH}
       ${NXP_USB_MIDDLEWARE_PATH}/include
       ${NXP_USB_MIDDLEWARE_PATH}/phy
       ${NXP_USB_MIDDLEWARE_PATH}/device
       ${NXP_USB_MIDDLEWARE_PATH}/host
+      ${EFFECTIVE_SDK_PATH}/components/osa
+      ${EFFECTIVE_SDK_PATH}/components/usb
+      ${EFFECTIVE_SDK_PATH}/components/usb/device
+      ${EFFECTIVE_SDK_PATH}/components/usb/phy
       ${NXP_USB_MIDDLEWARE_PATH}/device/class
       ${NXP_USB_MIDDLEWARE_PATH}/host/class
       ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
+      ${EFFECTIVE_SDK_PATH}/CMSIS/Driver/Include
       ${EFFECTIVE_SDK_PATH}/components/uart
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
       ${EFFECTIVE_SDK_PATH}/components/lists
       ${EFFECTIVE_SDK_PATH}/drivers/common
       ${EFFECTIVE_SDK_PATH}/drivers/gpio
     )
+    
+    # Add linker script for LPC55S69
+    set(LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC55S69/gcc/LPC55S69_cm33_core0_flash.ld")
+    if(NOT EXISTS ${LINKER_SCRIPT})
+      set(LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC55S69/gcc/LPC55S69_cm33_core0_ram.ld")
+    endif()
+    if(EXISTS ${LINKER_SCRIPT})
+      target_link_options(${TARGET} PRIVATE
+        -T "${LINKER_SCRIPT}"
+        -Wl,--gc-sections
+        -Wl,--print-memory-usage
+      )
+    else()
+      message(WARNING "LPC55S69 linker script not found at ${LINKER_SCRIPT}")
+    endif()
   else()
     message(FATAL_ERROR "Unsupported HURRICANE_TARGET_DEVICE: ${HURRICANE_TARGET_DEVICE}")
   endif()
@@ -130,10 +150,10 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
   set(NXP_SDK_CORE_SOURCES
-    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/system_LPC55S69_cm33_core0.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_power.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_reset.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/system_LPC55S69_cm33_core0.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers/fsl_clock.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers/fsl_power.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers/fsl_reset.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
     ${EFFECTIVE_SDK_PATH}/drivers/gpio/fsl_gpio.c
@@ -158,9 +178,11 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
     ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_ehci.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
-  list(APPEND NXP_SDK_USB_DEVICE_SOURCES
-    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
-  )
+list(APPEND NXP_SDK_USB_DEVICE_SOURCES
+  ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
+  ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511hs.c
+)
+target_compile_definitions(hurricane_lpc55s69 PRIVATE USB_DEVICE_CONFIG_LPCIP3511HS=1)
 endif()
 
 # Set SDK USB host sources
@@ -288,11 +310,17 @@ function(add_nxp_sdk_components TARGET)
     )
   elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     target_compile_definitions(${TARGET} PRIVATE
-      CPU_LPC55S69JBD100
+      CPU_LPC55S69JBD100_cm33_core0
       USB_STACK_BM
       SDK_DEVICE_FAMILY=LPC55S69
       FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL=1
       PRINTF_ADVANCED_ENABLE=1
+      USB_DEVICE_CONFIG_CDC_MULTIPORT=1
+      FSL_OSA_BM_TASK_ENABLE=0
+      FSL_OSA_BM_TIMER_CONFIG=0
+      USB_DEVICE_CONFIG_LPCIP3511HS=1
+      USB_DEVICE_CONFIG_HIGHSPEED=1
+      USB_DEVICE_CONFIG_DETACH_ENABLE=1
     )
   endif()
   
@@ -370,9 +398,10 @@ function(generate_nxp_sdk_config TARGET)
   file(WRITE ${USB_PHY_CONFIG_FILE} "/* Generated USB PHY configuration for ${TARGET} */\n")
   file(APPEND ${USB_PHY_CONFIG_FILE} "#ifndef USB_PHY_CONFIG_H\n")
   file(APPEND ${USB_PHY_CONFIG_FILE} "#define USB_PHY_CONFIG_H\n\n")
-  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_D_CAL (0x0CU)\n")
-  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DP (0x06U)\n")
-  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DM (0x06U)\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#include \"fsl_usb_phy.h\"\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_D_CAL USB_PHY_D_CAL_DEFAULT\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DP USB_PHY_TXCAL45DP_DEFAULT\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DM USB_PHY_TXCAL45DM_DEFAULT\n")
   file(APPEND ${USB_PHY_CONFIG_FILE} "\n#endif /* USB_PHY_CONFIG_H */\n")
   
   # Add config directory to include paths

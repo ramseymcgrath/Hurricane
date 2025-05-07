@@ -1,9 +1,9 @@
 #pragma once
 
 #include <stdint.h>
-#include "hw/hurricane_hw_hal.h"
-
-#define MAX_USB_DEVICES 8
+#include "hurricane_hw_hal.h"
+#include "usb_host_config.h"
+#include "usb_device_config.h"
 
 // Define the HID device structure
 typedef struct hurricane_hid_device_t {

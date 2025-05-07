@@ -1,14 +1,17 @@
 #pragma once
 
 #include <stdint.h>
-#include "core/usb_descriptor.h"
-#include "hw/hurricane_hw_hal.h"
+#include "usb_descriptor.h"
+#include "hurricane_hw_hal.h"
 
-typedef enum {
-    DEVICE_STATE_DEFAULT,
-    DEVICE_STATE_ADDRESS,
-    DEVICE_STATE_CONFIGURED,
-    DEVICE_STATE_ERROR
+/*! @brief Defines USB 2.0 device state */
+typedef enum _usb_device_state
+{
+    kUSB_DeviceStateConfigured = 0U, /*!< Device state, Configured*/
+    kUSB_DeviceStateAddress,         /*!< Device state, Address*/
+    kUSB_DeviceStateDefault,         /*!< Device state, Default*/
+    kUSB_DeviceStateAddressing,      /*!< Device state, Address setting*/
+    kUSB_DeviceStateTestMode,        /*!< Device state, Test mode*/
 } usb_device_state_t;
 
 typedef struct {

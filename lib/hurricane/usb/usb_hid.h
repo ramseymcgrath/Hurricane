@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/hurricane_usb.h"
+#include "hurricane_usb.h"
 #include "core/usb_descriptor.h"
 #include "usb/usb_control.h"
 #include "hw/hurricane_hw_hal.h"

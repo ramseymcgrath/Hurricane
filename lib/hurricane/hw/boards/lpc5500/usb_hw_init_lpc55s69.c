@@ -15,7 +15,6 @@
 #include "fsl_clock.h"
 #include "fsl_reset.h"
 #include "usb.h"
-#include "usb_phy.h"
 
 // Default PHY calibration values
 // These values are typically defined in the board configuration
@@ -28,21 +27,13 @@
 #define BOARD_USB0_PHY_TXCAL45DP (0x06U)
 #endif
 
-#ifndef BOARD_USB0_PHY_TXCAL45DM
-#define BOARD_USB0_PHY_TXCAL45DM (0x06U)
-#endif
+#include "fsl_usb_phy.h"
 
-#ifndef BOARD_USB1_PHY_D_CAL
-#define BOARD_USB1_PHY_D_CAL (0x0CU)
-#endif
-
-#ifndef BOARD_USB1_PHY_TXCAL45DP
-#define BOARD_USB1_PHY_TXCAL45DP (0x06U)
-#endif
-
-#ifndef BOARD_USB1_PHY_TXCAL45DM
-#define BOARD_USB1_PHY_TXCAL45DM (0x06U)
-#endif
+// Use SDK-defined PHY configuration constants
+#define BOARD_USB0_PHY_TXCAL45DM  kUSB_PhyControl_TXCAL45DM_MASK
+#define BOARD_USB1_PHY_D_CAL      kUSB_PhyControl_D_CAL_MASK
+#define BOARD_USB1_PHY_TXCAL45DP  kUSB_PhyControl_TXCAL45DP_MASK
+#define BOARD_USB1_PHY_TXCAL45DM  kUSB_PhyControl_TXCAL45DM_MASK
 
 #ifndef BOARD_XTAL_FREQ
 #define BOARD_XTAL_FREQ (24000000U)
@@ -67,20 +58,15 @@ extern usb_host_handle host_handle;
  */
 void usb_device_hw_init(void)
 {
-    // Enable USB0 PHY clock (12MHz)
-    CLOCK_EnableClock(kCLOCK_Usb0Phy);
-    
-    // Enable USB0 device clock
-    CLOCK_EnableClock(kCLOCK_Usbfs0);
-    
+
     // Power configuration for USB0
     POWER_DisablePD(kPDRUNCFG_PD_USB0_PHY); // Power up the USB0 PHY
-    
+
     // Reset USB0 controller and PHY
     RESET_PeripheralReset(kUSB0D_RST_SHIFT_RSTn);
     RESET_PeripheralReset(kUSB0HSL_RST_SHIFT_RSTn);
     RESET_PeripheralReset(kUSB0HMR_RST_SHIFT_RSTn);
-    
+
     // Setup USB clock source
     // USB0 needs a 48MHz clock - use PLL0 (main PLL) with divider
     const clock_usb_src_t usb0Src = kCLOCK_UsbSrcFro; // Use FRO as source (typically 96MHz)
@@ -90,43 +76,43 @@ void usb_device_hw_init(void)
         BOARD_USB0_PHY_TXCAL45DP,
         BOARD_USB0_PHY_TXCAL45DM,
     };
-    
+
     // Configure USB clock source and divider
     CLOCK_SetClkDiv(kCLOCK_DivUsb0Clk, usbClkDiv, true);
     CLOCK_SetClkDiv(kCLOCK_DivUsb0Clk, usbClkDiv, false);
     CLOCK_AttachClk(kFRO_HF_to_USB0_CLK);
-    
+
     // Initialize USB0 PHY
     USB_EhciPhyInit(kUSB_ControllerLpcIp3511Fs0, 0, &phyConfig);
-    
+
     printf("[LPC55S69-Device] USB0 PHY and clocks initialized (Full-Speed IP3511)\n");
 }
 
 /**
  * @brief Initialize USB1 (EHCI HS) for host mode
- * 
+ *
  * This function configures the USB1 controller in host mode (High Speed).
  * It sets up the necessary clocks, power, and PHY settings required for
  * proper operation of the USB1 controller.
- * 
+ *
  * USB1 is a High-Speed (HS) EHCI controller used in host mode.
  */
 void usb_host_hw_init(void)
 {
     // Enable USB1 PHY clock
-    CLOCK_EnableClock(kCLOCK_Usb1Phy);
-    
+    CLOCK_EnableClock(kCLOCK_Usb1Clk);
+
     // Enable USB1 host clock
     CLOCK_EnableClock(kCLOCK_Usbh1);
-    
+
     // Power configuration for USB1
     POWER_DisablePD(kPDRUNCFG_PD_USB1_PHY); // Power up the USB1 PHY
-    
+
     // Reset USB1 controller and PHY
     RESET_PeripheralReset(kUSB1H_RST_SHIFT_RSTn);
     RESET_PeripheralReset(kUSB1D_RST_SHIFT_RSTn);
     RESET_PeripheralReset(kUSB1_RST_SHIFT_RSTn);
-    
+
     // Setup USB clock source
     // USB1 needs a 480MHz clock for high-speed operation
     const clock_usb_src_t usb1Src = kCLOCK_UsbSrcPll0; // Use PLL0 as source
@@ -135,47 +121,47 @@ void usb_host_hw_init(void)
         BOARD_USB1_PHY_TXCAL45DP,
         BOARD_USB1_PHY_TXCAL45DM,
     };
-    
+
     // Configure USB1 clock source and divider (using PLL0)
     CLOCK_SetClkDiv(kCLOCK_DivUsb1Clk, 1, false);
     CLOCK_AttachClk(kPLL0_to_USB1_CLK);
-    
+
     // Initialize USB1 PHY
     USB_EhciPhyInit(kUSB_ControllerEhci1, BOARD_XTAL_FREQ, &phyConfig);
-    
+
     printf("[LPC55S69-Host] USB1 PHY and clocks initialized (High-Speed EHCI)\n");
 }
 
 /**
  * @brief Function to enable USB device interrupt
- * 
+ *
  * This function enables the interrupts for USB device controller (USB0)
  */
 void USB_DeviceIsrEnable(void)
 {
     uint8_t irqNumber = USB0_IRQn;
     uint8_t usbDeviceIP3511Irq = USB0_IRQn;
-    
+
     // Set interrupt priority
     NVIC_SetPriority((IRQn_Type)usbDeviceIP3511Irq, USB_DEVICE_INTERRUPT_PRIORITY);
-    
+
     // Enable interrupt
     EnableIRQ((IRQn_Type)usbDeviceIP3511Irq);
 }
 
 /**
  * @brief Function to enable USB host interrupt
- * 
+ *
  * This function enables the interrupts for USB host controller (USB1)
  */
 void USB_HostIsrEnable(void)
 {
     uint8_t irqNumber = USB1_IRQn;
     uint8_t usbHostEhciIrq = USB1_IRQn;
-    
+
     // Set interrupt priority
     NVIC_SetPriority((IRQn_Type)usbHostEhciIrq, USB_HOST_INTERRUPT_PRIORITY);
-    
+
     // Enable interrupt
     EnableIRQ((IRQn_Type)usbHostEhciIrq);
 }

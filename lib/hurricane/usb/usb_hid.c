@@ -1,4 +1,4 @@
-#include "usb/usb_hid.h"
+#include "usb_hid.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>

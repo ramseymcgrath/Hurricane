@@ -7,9 +7,8 @@
 hurricane_device_t hurricane_devices[MAX_USB_DEVICES] = {0};
 uint8_t hurricane_device_count = 0;
 
-void hurricane_usb_host_init(void) {
-    hurricane_hw_init();
-}
+#include "fsl_clock.h"
+#include "fsl_power.h"
 
 void hurricane_task(void) {
     hurricane_hw_poll();
