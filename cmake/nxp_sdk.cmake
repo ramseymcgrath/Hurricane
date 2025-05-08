@@ -146,10 +146,10 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
   set(NXP_SDK_CORE_SOURCES
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/system_LPC55S69_cm33_core0.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers/fsl_clock.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers/fsl_power.c
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers/fsl_reset.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/system_LPC55S69_cm33_core0.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_power.c
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_reset.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
     ${EFFECTIVE_SDK_PATH}/drivers/gpio/fsl_gpio.c
@@ -176,7 +176,7 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
   list(APPEND NXP_SDK_USB_DEVICE_SOURCES
     ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
-    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511hs.c
+#    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511hs.c
   )
   # Store this definition for later use with targets
   set(LPC55S69_DEVICE_DEFINITIONS USB_DEVICE_CONFIG_LPCIP3511HS=1)
@@ -184,7 +184,7 @@ endif()
 
 # Set SDK USB host sources
 set(NXP_SDK_USB_HOST_SOURCES
-  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host.c
+#  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host.c
   ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_devices.c
   ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_ehci.c
   ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_framework.c
@@ -426,9 +426,9 @@ find_sdk_component("USB HID Host Class" "middleware/usb/host/class/usb_host_hid.
 
 # Add missing component paths for LPC55S69
 list(APPEND NXP_SDK_INCLUDE_DIRS
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers
-    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/utilities
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
 )
 
 if(NOT USB_DEVICE_FOUND AND ENABLE_USB_DEVICE)
