@@ -34,5 +34,6 @@ else()
         ${CMAKE_CURRENT_SOURCE_DIR}/usb
         ${CMAKE_CURRENT_SOURCE_DIR}/core
         ${CMAKE_CURRENT_SOURCE_DIR}/hw
+        ../../../examples/lpc55s69/dual_hid
     )
 endif()

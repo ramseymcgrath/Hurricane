@@ -3,9 +3,6 @@ cmake_minimum_required(VERSION 3.20)
 
 # Set target device and include NXP SDK integration script
 set(HURRICANE_TARGET_DEVICE "LPC55S69" CACHE STRING "NXP MCU device name")
-# Target must be defined before SDK configuration
-add_executable(hurricane_lpc55s69 main.c)
-include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Source files for the LPC55S69 target
 file(GLOB MAIN_SRC CONFIGURE_DEPENDS
@@ -16,34 +13,13 @@ file(GLOB MAIN_SRC CONFIGURE_DEPENDS
 set(LPC55S69_TARGET_NAME "hurricane_lpc55s69")
 set(LPC55S69_FLASH_BINARY "${CMAKE_CURRENT_BINARY_DIR}/${LPC55S69_TARGET_NAME}.bin")
 
-# Create LPC55S69 executable with main sources
+# Create LPC55S69 executable with main sources - only define it once
 add_executable(${LPC55S69_TARGET_NAME}
     ${MAIN_SRC}
 )
 
-# Include directories
-target_include_directories(${LPC55S69_TARGET_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/lib/hurricane
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/core
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
-    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69
-    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/device
-    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
-    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
-    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
-)
-
-# Linker script
-target_link_options(${LPC55S69_TARGET_NAME} PRIVATE
-    "-T${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/linker.ld"
-)
-
-# Link against our LPC55S69 HAL library and Hurricane core
-target_link_libraries(${LPC55S69_TARGET_NAME}
-    hurricane_lpc55s69_hal
-    hurricane
-)
+# Now include the NXP SDK after the target is created
+include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Create the HAL library for LPC55S69
 add_library(hurricane_lpc55s69_hal
@@ -67,6 +43,35 @@ target_include_directories(hurricane_lpc55s69_hal PUBLIC
     ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
     ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
     ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
+    ${CMAKE_CURRENT_BINARY_DIR}/nxp_sdk_config
+)
+
+# Also add SDK components to the HAL library
+add_nxp_sdk_components(hurricane_lpc55s69_hal
+    USB_HOST
+    USB_DEVICE
+    USB_HID_HOST
+    USB_HID_DEVICE
+)
+
+# Include directories
+target_include_directories(${LPC55S69_TARGET_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/lib/hurricane
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/core
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/device
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
+    ${CMAKE_CURRENT_BINARY_DIR}/nxp_sdk_config
+)
+
+# Link against our LPC55S69 HAL library and Hurricane core
+target_link_libraries(${LPC55S69_TARGET_NAME}
+    hurricane_lpc55s69_hal
+    hurricane
 )
 
 # Add NXP SDK components with more comprehensive list
@@ -125,6 +130,7 @@ target_link_options(${LPC55S69_TARGET_NAME} PRIVATE
     -ffunction-sections
     -fdata-sections
     -Wl,--print-memory-usage
+    -T${LPC55S69_LINKER_SCRIPT}
 )
 
 # Binary file generation

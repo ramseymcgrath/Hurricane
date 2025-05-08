@@ -33,8 +33,8 @@ endif()
 
 # SDK version check with better error handling
 set(REQUIRED_SDK_VERSION "2.10.0")
-if(EXISTS "${EFFECTIVE_SDK_PATH}/middleware/usb/version.txt")
-  file(READ "${EFFECTIVE_SDK_PATH}/middleware/usb/version.txt" SDK_VERSION)
+if(EXISTS "~/code/mcuxsdk-middleware-usb/version.txt")
+  file(READ "~/code/mcuxsdk-middleware-usb/version.txt" SDK_VERSION)
   string(STRIP "${SDK_VERSION}" SDK_VERSION)
   message(STATUS "Found NXP SDK version: ${SDK_VERSION}")
   
@@ -46,10 +46,12 @@ else()
   message(WARNING "Could not determine NXP SDK version. Continuing anyway.")
 endif()
 
-# Set USB middleware path, defaulting to /Users/ramseymcgrath/code/mcuxsdk-middleware-usb if not set
-if(NOT DEFINED NXP_USB_MIDDLEWARE_PATH)
-  set(NXP_USB_MIDDLEWARE_PATH "${EFFECTIVE_SDK_PATH}/middleware/usb")
-endif()
+# Set USB middleware path to custom location
+set(NXP_USB_MIDDLEWARE_PATH "/Users/ramseymcgrath/code/mcuxsdk-middleware-usb")
+list(APPEND NXP_SDK_INCLUDE_DIRS
+  ${NXP_USB_MIDDLEWARE_PATH}/device/include
+  ${NXP_USB_MIDDLEWARE_PATH}/host/include
+)
 
 # Set SDK include directories with more comprehensive paths for the selected device
 if(DEFINED HURRICANE_TARGET_DEVICE)
@@ -75,9 +77,9 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
     
   elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     set(NXP_SDK_INCLUDE_DIRS
-      ${EFFECTIVE_SDK_PATH}/devices/LPC55S69
-      ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers
-      ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/utilities
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
       ${NXP_USB_MIDDLEWARE_PATH}
       ${NXP_USB_MIDDLEWARE_PATH}/include
       ${NXP_USB_MIDDLEWARE_PATH}/phy
@@ -98,19 +100,13 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/drivers/gpio
     )
     
-    # Add linker script for LPC55S69
-    set(LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC55S69/gcc/LPC55S69_cm33_core0_flash.ld")
-    if(NOT EXISTS ${LINKER_SCRIPT})
-      set(LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC55S69/gcc/LPC55S69_cm33_core0_ram.ld")
+    # Store the linker script path for LPC55S69 for later use
+    set(LPC55S69_LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/gcc/LPC55S69_cm33_core0_flash.ld" CACHE INTERNAL "LPC55S69 linker script")
+    if(NOT EXISTS ${LPC55S69_LINKER_SCRIPT})
+      set(LPC55S69_LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/gcc/LPC55S69_cm33_core0_ram.ld" CACHE INTERNAL "LPC55S69 linker script")
     endif()
-    if(EXISTS ${LINKER_SCRIPT})
-      target_link_options(${TARGET} PRIVATE
-        -T "${LINKER_SCRIPT}"
-        -Wl,--gc-sections
-        -Wl,--print-memory-usage
-      )
-    else()
-      message(WARNING "LPC55S69 linker script not found at ${LINKER_SCRIPT}")
+    if(NOT EXISTS ${LPC55S69_LINKER_SCRIPT})
+      message(WARNING "LPC55S69 linker script not found")
     endif()
   else()
     message(FATAL_ERROR "Unsupported HURRICANE_TARGET_DEVICE: ${HURRICANE_TARGET_DEVICE}")
@@ -178,11 +174,12 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
     ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_ehci.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
-list(APPEND NXP_SDK_USB_DEVICE_SOURCES
-  ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
-  ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511hs.c
-)
-target_compile_definitions(hurricane_lpc55s69 PRIVATE USB_DEVICE_CONFIG_LPCIP3511HS=1)
+  list(APPEND NXP_SDK_USB_DEVICE_SOURCES
+    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
+    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511hs.c
+  )
+  # Store this definition for later use with targets
+  set(LPC55S69_DEVICE_DEFINITIONS USB_DEVICE_CONFIG_LPCIP3511HS=1)
 endif()
 
 # Set SDK USB host sources
@@ -426,6 +423,13 @@ find_sdk_component("USB Device Stack" "middleware/usb/device/usb_device_dci.c" U
 find_sdk_component("USB Host Stack" "middleware/usb/host/usb_host_hci.c" USB_HOST_FOUND)
 find_sdk_component("USB HID Device Class" "middleware/usb/device/class/usb_device_hid.c" USB_HID_DEVICE_FOUND)
 find_sdk_component("USB HID Host Class" "middleware/usb/host/class/usb_host_hid.c" USB_HID_HOST_FOUND)
+
+# Add missing component paths for LPC55S69
+list(APPEND NXP_SDK_INCLUDE_DIRS
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/drivers
+    ${EFFECTIVE_SDK_PATH}/devices/LPC55S69/utilities
+)
 
 if(NOT USB_DEVICE_FOUND AND ENABLE_USB_DEVICE)
   message(WARNING "USB Device stack not found but ENABLE_USB_DEVICE is ON. Device functionality might not work.")

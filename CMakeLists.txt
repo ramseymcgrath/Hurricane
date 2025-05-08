@@ -21,34 +21,25 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
     elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
         set(PLATFORM lpc55s69)
     else()
-        set(PLATFORM dummy)
+        set(PLATFORM lpc55s69)
     endif()
 endif()
 
 # Platform configuration
 if(NOT DEFINED PLATFORM)
-    set(PLATFORM dummy)
+    set(PLATFORM lpc55s69)
 endif()
 message(STATUS "Using platform: ${PLATFORM}")
 message(STATUS "USB Host support: ${ENABLE_USB_HOST}")
 message(STATUS "USB Device support: ${ENABLE_USB_DEVICE}")
 message(STATUS "Dual USB stack: ${ENABLE_DUAL_USB}")
 
-# Set target-specific variables
-if(PLATFORM STREQUAL "rt1060")
-    set(TARGET "rt1060")
-    set(HURRICANE_TARGET_DEVICE "MIMXRT1062" CACHE STRING "NXP MCU device name")
-    message(STATUS "Building for RT1060 target")
-    
-    # Verify NXP SDK path is provided for RT1060 builds
-    if(NOT NXP_SDK_PATH AND NOT USE_PACKAGED_SDK)
-        message(FATAL_ERROR "NXP_SDK_PATH is required for RT1060 builds. Please specify -DNXP_SDK_PATH=<path to SDK>")
-    elseif(USE_PACKAGED_SDK AND NOT NXP_SDK_PACKAGE_PATH)
-        message(FATAL_ERROR "NXP_SDK_PACKAGE_PATH is required when USE_PACKAGED_SDK=ON. Please specify -DNXP_SDK_PACKAGE_PATH=<path to packaged SDK>")
-    endif()
-    
-    # Include NXP SDK integration script for global configuration
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/nxp_sdk.cmake)
+# Core library
+add_subdirectory(lib/hurricane)
+
+# Platform-specific configuration
+if(PLATFORM STREQUAL "dummy")
+    # Dummy platform configuration
 elseif(PLATFORM STREQUAL "lpc55s69")
     set(TARGET "lpc55s69")
     set(HURRICANE_TARGET_DEVICE "LPC55S69" CACHE STRING "NXP MCU device name")
@@ -60,27 +51,26 @@ elseif(PLATFORM STREQUAL "lpc55s69")
     elseif(USE_PACKAGED_SDK AND NOT NXP_SDK_PACKAGE_PATH)
         message(FATAL_ERROR "NXP_SDK_PACKAGE_PATH is required when USE_PACKAGED_SDK=ON. Please specify -DNXP_SDK_PACKAGE_PATH=<path to packaged SDK>")
     endif()
-    
-    # Include NXP SDK integration script for global configuration
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 elseif(PLATFORM STREQUAL "esp32")
     set(TARGET "esp32")
     message(STATUS "Building for ESP32 target")
 endif()
 
-# Core library
-add_subdirectory(lib/hurricane)
+# Include NXP SDK integration script for global configuration if using NXP platforms
+if(PLATFORM STREQUAL "lpc55s69" OR PLATFORM STREQUAL "rt1060")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/nxp_sdk.cmake)
+endif()
 
 # Platform-specific target
 add_subdirectory(targets/${PLATFORM})
 
 # Build examples if enabled and target is supported
 if(BUILD_EXAMPLES)
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples/${TARGET})
-        message(STATUS "Building examples for ${TARGET}")
-        # Examples are added in the target's CMakeLists.txt
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples/${PLATFORM})
+        message(STATUS "Building examples for ${PLATFORM}")
+        add_subdirectory(examples/${PLATFORM})
     else()
-        message(STATUS "No examples available for ${TARGET}")
+        message(STATUS "No examples available for ${PLATFORM}")
     endif()
 endif()
 

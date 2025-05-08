@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "hurricane_hw_hal.h"
 #include "usb_host_config.h"
-#include "usb_device_config.h"
+#include "device_config.h"
 
 // Define the HID device structure
 typedef struct hurricane_hid_device_t {

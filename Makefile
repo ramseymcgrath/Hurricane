@@ -8,7 +8,7 @@ TEST_TARGET   = hurricane_tests
 BUILD_DIR     = build
 
 # NXP SDK path for RT1060 and LPC55S69 targets
-NXP_SDK_PATH   = /Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk
+NXP_SDK_PATH   = /Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk/devices/LPC/LPC5500/LPC55S69/gcc
 
 # === Source Dirs ===
 HURRICANE_DIR = lib/hurricane
