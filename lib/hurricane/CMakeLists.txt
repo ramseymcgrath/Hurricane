@@ -50,11 +50,6 @@ else()
             ${NXP_SDK_PATH}/components/lists
             ${NXP_SDK_PATH}/components/uart
             ${NXP_SDK_PATH}/components/serial_manager
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph1
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph2
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph3
-            ${NXP_SDK_PATH}/arch/arm/CMSIS/Core/Include
         )
         
         # Add required CPU and device definitions for LPC55S69

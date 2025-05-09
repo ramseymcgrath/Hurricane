@@ -44,6 +44,22 @@ target_include_directories(hurricane_lpc55s69_hal PUBLIC
     ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
     ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
     ${CMAKE_CURRENT_BINARY_DIR}/nxp_sdk_config
+    # Add NXP SDK paths for the LPC55S69 HAL library
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph1
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph2
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph3
+    ${NXP_SDK_PATH}/CMSIS/Core/Include
+    ${NXP_SDK_PATH}/arch/arm/CMSIS/Core/Include
+    ${NXP_SDK_PATH}/drivers/common
+    # Add debug console component
+    ${NXP_SDK_PATH}/components/debug_console
+    ${NXP_SDK_PATH}/components/serial_manager
+    # Add OS abstraction component
+    ${NXP_SDK_PATH}/components/osa
+    ${NXP_SDK_PATH}/components/osa/config
 )
 
 # Also add SDK components to the HAL library
@@ -52,6 +68,15 @@ add_nxp_sdk_components(hurricane_lpc55s69_hal
     USB_DEVICE
     USB_HID_HOST
     USB_HID_DEVICE
+)
+
+# Add CPU definitions for the HAL library
+target_compile_definitions(hurricane_lpc55s69_hal PUBLIC
+    CPU_LPC55S69JBD100_cm33_core0
+    __CORTEX_M=33
+    __FPU_PRESENT=1
+    __NEWLIB__
+    __USE_CMSIS
 )
 
 # Include directories
