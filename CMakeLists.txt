@@ -66,10 +66,11 @@ add_subdirectory(targets/${PLATFORM})
 
 # Build examples if enabled and target is supported
 if(BUILD_EXAMPLES)
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples/${PLATFORM})
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples/${PLATFORM} AND NOT PLATFORM STREQUAL "lpc55s69")
+        # For LPC55S69, examples are built within the target's CMakeLists.txt to avoid conflicts
         message(STATUS "Building examples for ${PLATFORM}")
         add_subdirectory(examples/${PLATFORM})
-    else()
+    elseif(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples/${PLATFORM})
         message(STATUS "No examples available for ${PLATFORM}")
     endif()
 endif()

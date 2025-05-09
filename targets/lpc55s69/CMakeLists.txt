@@ -151,9 +151,7 @@ install(TARGETS ${LPC55S69_TARGET_NAME}
     RUNTIME DESTINATION bin
 )
 
-# Add examples subdirectory conditionally
-# Note: Skip examples for now until they are properly configured
-# The examples/lpc55s69 directory exists but doesn't have a CMakeLists.txt file yet
-#if(EXISTS ${CMAKE_SOURCE_DIR}/examples/lpc55s69)
-#    add_subdirectory(${CMAKE_SOURCE_DIR}/examples/lpc55s69 ${CMAKE_BINARY_DIR}/examples/lpc55s69)
-#endif()
+# Add examples subdirectory - using relative path to avoid binary directory conflict
+if(EXISTS ${CMAKE_SOURCE_DIR}/examples/dual_hid/lpc55s69)
+    add_subdirectory(examples/dual_hid/lpc55s69 examples/dual_hid/lpc55s69)
+endif()

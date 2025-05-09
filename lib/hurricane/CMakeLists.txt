@@ -36,4 +36,34 @@ else()
         ${CMAKE_CURRENT_SOURCE_DIR}/hw
         ../../../examples/lpc55s69/dual_hid
     )
+    
+    # Add NXP SDK include paths for LPC55S69 platform
+    if(DEFINED PLATFORM AND PLATFORM STREQUAL "lpc55s69")
+        target_include_directories(hurricane PUBLIC
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/components
+            ${NXP_SDK_PATH}/CMSIS/Core/Include
+            ${NXP_SDK_PATH}/drivers/common
+            ${NXP_SDK_PATH}/components/gpio
+            ${NXP_SDK_PATH}/components/lists
+            ${NXP_SDK_PATH}/components/uart
+            ${NXP_SDK_PATH}/components/serial_manager
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph1
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph2
+            ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph3
+            ${NXP_SDK_PATH}/arch/arm/CMSIS/Core/Include
+        )
+        
+        # Add required CPU and device definitions for LPC55S69
+        target_compile_definitions(hurricane PUBLIC
+            CPU_LPC55S69JBD100_cm33_core0
+            __CORTEX_M=33
+            __FPU_PRESENT=1
+            __NEWLIB__
+            __USE_CMSIS
+        )
+    endif()
 endif()

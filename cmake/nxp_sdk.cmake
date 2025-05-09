@@ -7,6 +7,8 @@
 option(ENABLE_USB_HOST "Enable USB Host stack" ON)
 option(ENABLE_USB_DEVICE "Enable USB Device stack" ON)
 option(ENABLE_DUAL_USB "Enable dual USB stack (Host and Device simultaneously)" ON)
+
+# Modify SDK path to point to the correct location
 set(NXP_SDK_PATH "/Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk" CACHE PATH "Path to NXP MCUXpresso SDK")
 
 # Package options
