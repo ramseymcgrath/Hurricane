@@ -1,4 +1,4 @@
-#include "core/usb_host_controller.h"
+#include "usb_host_controller.h"
 #include "hw/hurricane_hw_hal.h"
 #include "core/usb_descriptor.h"
 #include "usb_control.h"

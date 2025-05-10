@@ -1,4 +1,4 @@
-#include "usb/usb_hid.h"
+#include "usb_hid.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -112,4 +112,44 @@ int hurricane_hid_fetch_report_descriptor(hurricane_device_t* dev) {
         printf("[HID] Failed to fetch HID report descriptor\n");
         return -1;
     }
+}
+
+// Callback function pointers
+static void (*hid_send_callback)(uint8_t* buffer, uint16_t length) = NULL;
+static void (*hid_receive_callback)(uint8_t* buffer, uint16_t length) = NULL;
+
+/**
+ * @brief Register HID device callbacks for sending and receiving reports
+ *
+ * @param send_callback Function called after a report is sent to host
+ * @param receive_callback Function called after a report is received from host
+ */
+void hurricane_device_hid_register_callbacks(
+    void (*send_callback)(uint8_t* buffer, uint16_t length),
+    void (*receive_callback)(uint8_t* buffer, uint16_t length)
+) {
+    hid_send_callback = send_callback;
+    hid_receive_callback = receive_callback;
+}
+
+/**
+ * @brief Send HID report to host
+ *
+ * @param buffer Pointer to report data
+ * @param length Size of report in bytes
+ * @return Number of bytes sent, or negative error code
+ */
+int hurricane_device_hid_send_report(uint8_t* buffer, uint16_t length) {
+    // Use IN endpoint 1 for HID reports (standard for HID devices)
+    const uint8_t hid_endpoint = 0x81; // 0x80 is IN direction, 0x01 is endpoint number
+    
+    // Send the report via interrupt IN transfer
+    int result = hurricane_hw_device_interrupt_in_transfer(hid_endpoint, buffer, length);
+    
+    // Call the send callback if registered and transfer was successful
+    if (result > 0 && hid_send_callback != NULL) {
+        hid_send_callback(buffer, result);
+    }
+    
+    return result;
 }

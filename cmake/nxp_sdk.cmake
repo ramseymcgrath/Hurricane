@@ -7,6 +7,8 @@
 option(ENABLE_USB_HOST "Enable USB Host stack" ON)
 option(ENABLE_USB_DEVICE "Enable USB Device stack" ON)
 option(ENABLE_DUAL_USB "Enable dual USB stack (Host and Device simultaneously)" ON)
+
+# Modify SDK path to point to the correct location
 set(NXP_SDK_PATH "/Users/ramseymcgrath/code/mcuxpresso-sdk/mcuxsdk" CACHE PATH "Path to NXP MCUXpresso SDK")
 
 # Package options
@@ -33,8 +35,8 @@ endif()
 
 # SDK version check with better error handling
 set(REQUIRED_SDK_VERSION "2.10.0")
-if(EXISTS "${EFFECTIVE_SDK_PATH}/middleware/usb/version.txt")
-  file(READ "${EFFECTIVE_SDK_PATH}/middleware/usb/version.txt" SDK_VERSION)
+if(EXISTS "~/code/mcuxsdk-middleware-usb/version.txt")
+  file(READ "~/code/mcuxsdk-middleware-usb/version.txt" SDK_VERSION)
   string(STRIP "${SDK_VERSION}" SDK_VERSION)
   message(STATUS "Found NXP SDK version: ${SDK_VERSION}")
   
@@ -46,10 +48,12 @@ else()
   message(WARNING "Could not determine NXP SDK version. Continuing anyway.")
 endif()
 
-# Set USB middleware path, defaulting to /Users/ramseymcgrath/code/mcuxsdk-middleware-usb if not set
-if(NOT DEFINED NXP_USB_MIDDLEWARE_PATH)
-  set(NXP_USB_MIDDLEWARE_PATH "/Users/ramseymcgrath/code/mcuxsdk-middleware-usb")
-endif()
+# Set USB middleware path to custom location
+set(NXP_USB_MIDDLEWARE_PATH "/Users/ramseymcgrath/code/mcuxsdk-middleware-usb")
+list(APPEND NXP_SDK_INCLUDE_DIRS
+  ${NXP_USB_MIDDLEWARE_PATH}/device/include
+  ${NXP_USB_MIDDLEWARE_PATH}/host/include
+)
 
 # Set SDK include directories with more comprehensive paths for the selected device
 if(DEFINED HURRICANE_TARGET_DEVICE)
@@ -77,21 +81,36 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
     set(NXP_SDK_INCLUDE_DIRS
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
-      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities/debug_console
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/periph
       ${NXP_USB_MIDDLEWARE_PATH}
       ${NXP_USB_MIDDLEWARE_PATH}/include
       ${NXP_USB_MIDDLEWARE_PATH}/phy
       ${NXP_USB_MIDDLEWARE_PATH}/device
       ${NXP_USB_MIDDLEWARE_PATH}/host
+      ${EFFECTIVE_SDK_PATH}/components/osa
+      ${EFFECTIVE_SDK_PATH}/components/usb
+      ${EFFECTIVE_SDK_PATH}/components/usb/device
+      ${EFFECTIVE_SDK_PATH}/components/usb/phy # Added path for fsl_usb_phy.h
       ${NXP_USB_MIDDLEWARE_PATH}/device/class
       ${NXP_USB_MIDDLEWARE_PATH}/host/class
       ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
+      ${EFFECTIVE_SDK_PATH}/CMSIS/Driver/Include
       ${EFFECTIVE_SDK_PATH}/components/uart
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
       ${EFFECTIVE_SDK_PATH}/components/lists
       ${EFFECTIVE_SDK_PATH}/drivers/common
-      ${EFFECTIVE_SDK_PATH}/drivers/gpio
+      ${EFFECTIVE_SDK_PATH}/drivers/lpc_gpio
     )
+    
+    # Store the linker script path for LPC55S69 for later use
+    set(LPC55S69_LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/gcc/LPC55S69_cm33_core0_flash.ld" CACHE INTERNAL "LPC55S69 linker script")
+    if(NOT EXISTS ${LPC55S69_LINKER_SCRIPT})
+      set(LPC55S69_LINKER_SCRIPT "${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/gcc/LPC55S69_cm33_core0_ram.ld" CACHE INTERNAL "LPC55S69 linker script")
+    endif()
+    if(NOT EXISTS ${LPC55S69_LINKER_SCRIPT})
+      message(WARNING "LPC55S69 linker script not found")
+    endif()
   else()
     message(FATAL_ERROR "Unsupported HURRICANE_TARGET_DEVICE: ${HURRICANE_TARGET_DEVICE}")
   endif()
@@ -136,7 +155,7 @@ elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_reset.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
-    ${EFFECTIVE_SDK_PATH}/drivers/gpio/fsl_gpio.c
+    ${EFFECTIVE_SDK_PATH}/drivers/lpc_gpio/fsl_gpio.c # Use LPC-specific GPIO driver
   )
 endif()
 
@@ -160,12 +179,15 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
   list(APPEND NXP_SDK_USB_DEVICE_SOURCES
     ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511.c
+#    ${NXP_USB_MIDDLEWARE_PATH}/device/usb_device_lpcip3511hs.c
   )
+  # Store this definition for later use with targets
+  set(LPC55S69_DEVICE_DEFINITIONS USB_DEVICE_CONFIG_LPCIP3511HS=1)
 endif()
 
 # Set SDK USB host sources
 set(NXP_SDK_USB_HOST_SOURCES
-  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host.c
+#  ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host.c
   ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_devices.c
   ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_ehci.c
   ${NXP_USB_MIDDLEWARE_PATH}/host/usb_host_framework.c
@@ -192,6 +214,10 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_clock.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+
+  set(NXP_SDK_GPIO_SOURCES # Define NXP_SDK_GPIO_SOURCES for LPC55S69
+    ${EFFECTIVE_SDK_PATH}/drivers/lpc_gpio/fsl_gpio.c # Use LPC-specific GPIO driver
+  )
 
   set(NXP_SDK_CLOCK_SOURCES
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
@@ -249,19 +275,19 @@ function(add_nxp_sdk_components TARGET)
   # Add USB Device components if needed
   if(NEED_USB_DEVICE AND ENABLE_USB_DEVICE)
     list(APPEND COMPONENT_SOURCES ${NXP_SDK_USB_DEVICE_SOURCES})
-    target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_EHCI=1)
+    # target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_EHCI=1) # Removed, defined in usb_device_config.h
   endif()
   
   # Add HID Host component if needed
   if(NEED_USB_HID_HOST AND ENABLE_USB_HOST)
     list(APPEND COMPONENT_SOURCES ${NXP_SDK_USB_HID_HOST_SOURCES})
-    target_compile_definitions(${TARGET} PRIVATE USB_HOST_CONFIG_HID=1)
+    # target_compile_definitions(${TARGET} PRIVATE USB_HOST_CONFIG_HID=1) # This is for host, might be okay, but HID device is in usb_device_config.h
   endif()
   
   # Add HID Device component if needed
   if(NEED_USB_HID_DEVICE AND ENABLE_USB_DEVICE)
     list(APPEND COMPONENT_SOURCES ${NXP_SDK_USB_HID_DEVICE_SOURCES})
-    target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_HID=1)
+    # target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_HID=1) # Removed, defined in usb_device_config.h
   endif()
   
   # Add GPIO if needed
@@ -288,11 +314,21 @@ function(add_nxp_sdk_components TARGET)
     )
   elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     target_compile_definitions(${TARGET} PRIVATE
-      CPU_LPC55S69JBD100
+      CPU_LPC55S69JBD100_cm33_core0
       USB_STACK_BM
       SDK_DEVICE_FAMILY=LPC55S69
       FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL=1
       PRINTF_ADVANCED_ENABLE=1
+      USB_DEVICE_CONFIG_CDC_MULTIPORT=1 # Assuming this is still desired
+      FSL_OSA_BM_TASK_ENABLE=0
+      FSL_OSA_BM_TIMER_CONFIG=0
+      # The following USB device config macros are removed from here
+      # as they are defined in usb_device_config.h
+      # USB_DEVICE_CONFIG_LPCIP3511FS=1
+      # USB_DEVICE_CONFIG_LPCIP3511HS=0
+      # USB_DEVICE_CONFIG_EHCI=0
+      USB_DEVICE_CONFIG_HIGHSPEED=0    # Device is FS
+      USB_DEVICE_CONFIG_CONTROLLER_ID=kUSB_ControllerLpcIp3511Fs0 # Explicitly set controller ID
     )
   endif()
   
@@ -301,8 +337,8 @@ function(add_nxp_sdk_components TARGET)
     # Dual USB stack configuration
     target_compile_definitions(${TARGET} PRIVATE
       USB_DUAL_STACK=1
-      USB_DEVICE_CONFIG_EHCI=1
-      USB_HOST_CONFIG_EHCI=1
+      # USB_DEVICE_CONFIG_EHCI is defined in usb_device_config.h
+      USB_HOST_CONFIG_EHCI=1 # Host might still use EHCI for USB1 if dual stack implies using both controllers
       HURRICANE_DUAL_USB_SUPPORT=1
     )
   elseif(ENABLE_USB_HOST)
@@ -315,7 +351,7 @@ function(add_nxp_sdk_components TARGET)
     # Device-only configuration
     target_compile_definitions(${TARGET} PRIVATE
       USB_DUAL_STACK=0
-      USB_DEVICE_CONFIG_EHCI=1
+      # USB_DEVICE_CONFIG_EHCI is defined in usb_device_config.h
     )
   endif()
   
@@ -331,13 +367,33 @@ function(generate_nxp_sdk_config TARGET)
   # USB device configuration with more options
   set(USB_DEVICE_CONFIG_FILE ${CONFIG_DIR}/usb_device_config.h)
   file(WRITE ${USB_DEVICE_CONFIG_FILE} "/* Generated USB device configuration for ${TARGET} */\n")
+  file(APPEND ${USB_DEVICE_CONFIG_FILE} "/* This file is the single source of truth for USB device configuration */\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#ifndef USB_DEVICE_CONFIG_H\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_H\n\n")
-  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_EHCI (1U)\n")
-  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MAX_POWER (500U)\n")
+
+  if(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "/* LPC55S69 USB device controller configuration */\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511FS (1U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511HS (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_EHCI (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_KHCI (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_CONTROLLER_ID kUSB_ControllerLpcIp3511Fs0\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MAX_POWER (100U) /* Max power in mA */\n")
+  else()
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "/* Default EHCI USB device controller configuration */\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_EHCI (1U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511FS (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511HS (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_KHCI (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_CONTROLLER_ID kUSB_ControllerEhci0\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MAX_POWER (500U)\n")
+  endif()
+
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_SELF_POWER (0U)\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_DETACH_ENABLE (0U)\n")
+  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_INTERFACES (4U) /* Max interfaces */\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_ENDPOINTS (8U)\n")
+  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_STRING_COUNT (4U) /* e.g., LangID, Manufacturer, Product, SerialNumber */\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_HID (1U)\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_CDC_ACM (0U)\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MSC (0U)\n")
@@ -363,6 +419,12 @@ function(generate_nxp_sdk_config TARGET)
   file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_CDC (0U)\n")
   file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MSC (0U)\n")
   file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_BUFFER_PROPERTY_CACHEABLE (0U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MAX_TRANSFERS (8U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MAX_HOST (1U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_ENUMERATION_MAX_STALL_RETRIES (3U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_ENUMERATION_MAX_RETRIES (3U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MAX_NAK (10U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_CONFIGURATION_MAX_INTERFACE USB_HOST_CONFIG_MAX_INTERFACES\n")
   file(APPEND ${USB_HOST_CONFIG_FILE} "\n#endif /* USB_HOST_CONFIG_H */\n")
   
   # Physical layer (PHY) configuration
@@ -370,9 +432,10 @@ function(generate_nxp_sdk_config TARGET)
   file(WRITE ${USB_PHY_CONFIG_FILE} "/* Generated USB PHY configuration for ${TARGET} */\n")
   file(APPEND ${USB_PHY_CONFIG_FILE} "#ifndef USB_PHY_CONFIG_H\n")
   file(APPEND ${USB_PHY_CONFIG_FILE} "#define USB_PHY_CONFIG_H\n\n")
-  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_D_CAL (0x0CU)\n")
-  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DP (0x06U)\n")
-  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DM (0x06U)\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#include \"fsl_usb_phy.h\"\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_D_CAL USB_PHY_D_CAL_DEFAULT\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DP USB_PHY_TXCAL45DP_DEFAULT\n")
+  file(APPEND ${USB_PHY_CONFIG_FILE} "#define BOARD_USB_PHY_TXCAL45DM USB_PHY_TXCAL45DM_DEFAULT\n")
   file(APPEND ${USB_PHY_CONFIG_FILE} "\n#endif /* USB_PHY_CONFIG_H */\n")
   
   # Add config directory to include paths
@@ -397,6 +460,13 @@ find_sdk_component("USB Device Stack" "middleware/usb/device/usb_device_dci.c" U
 find_sdk_component("USB Host Stack" "middleware/usb/host/usb_host_hci.c" USB_HOST_FOUND)
 find_sdk_component("USB HID Device Class" "middleware/usb/device/class/usb_device_hid.c" USB_HID_DEVICE_FOUND)
 find_sdk_component("USB HID Host Class" "middleware/usb/host/class/usb_host_hid.c" USB_HID_HOST_FOUND)
+
+# Add missing component paths for LPC55S69
+list(APPEND NXP_SDK_INCLUDE_DIRS
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+    ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
+)
 
 if(NOT USB_DEVICE_FOUND AND ENABLE_USB_DEVICE)
   message(WARNING "USB Device stack not found but ENABLE_USB_DEVICE is ON. Device functionality might not work.")

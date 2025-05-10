@@ -58,7 +58,6 @@ static void set_interface_callback(uint8_t interface, uint8_t alt_setting);
 static bool app_init(void)
 {
     printf("\n==================================================\n");
-    printf("Hurricane Dual USB Stack - LPC55S69 HID Example\n");
     printf("==================================================\n\n");
 
     // Initialize Hurricane core

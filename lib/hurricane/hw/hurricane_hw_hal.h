@@ -5,6 +5,13 @@
 #include <stdbool.h>
 
 /**
+ * @brief Macro to mark parameters as intentionally unused
+ * Used to suppress compiler warnings for parameters required by an interface
+ * but not used in a particular implementation.
+ */
+#define HURRICANE_UNUSED(x) ((void)(x))
+
+/**
  * @brief Hurricane Dual USB Stack Version
  */
 #define HURRICANE_USB_VERSION_MAJOR 2

@@ -7,9 +7,10 @@
 hurricane_device_t hurricane_devices[MAX_USB_DEVICES] = {0};
 uint8_t hurricane_device_count = 0;
 
-void hurricane_usb_host_init(void) {
-    hurricane_hw_init();
-}
+#if defined(CPU_LPC55S69JBD100_cm33_core0) && !defined(__APPLE__)
+#include "fsl_clock.h"
+#include "fsl_power.h"
+#endif
 
 void hurricane_task(void) {
     hurricane_hw_poll();

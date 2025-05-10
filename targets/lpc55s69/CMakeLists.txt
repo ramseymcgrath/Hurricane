@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.20)
 
 # Set target device and include NXP SDK integration script
 set(HURRICANE_TARGET_DEVICE "LPC55S69" CACHE STRING "NXP MCU device name")
-include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Source files for the LPC55S69 target
 file(GLOB MAIN_SRC CONFIGURE_DEPENDS
@@ -14,35 +13,17 @@ file(GLOB MAIN_SRC CONFIGURE_DEPENDS
 set(LPC55S69_TARGET_NAME "hurricane_lpc55s69")
 set(LPC55S69_FLASH_BINARY "${CMAKE_CURRENT_BINARY_DIR}/${LPC55S69_TARGET_NAME}.bin")
 
-# Create LPC55S69 executable with main sources
+# Create LPC55S69 executable with main sources - only define it once
 add_executable(${LPC55S69_TARGET_NAME}
     ${MAIN_SRC}
 )
 
-# Include directories
-target_include_directories(${LPC55S69_TARGET_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/lib/hurricane
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/core
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
-)
-
-# Linker script
-target_link_options(${LPC55S69_TARGET_NAME} PRIVATE
-    "-T${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/linker.ld"
-)
-
-# Link against our LPC55S69 HAL library and Hurricane core
-target_link_libraries(${LPC55S69_TARGET_NAME}
-    hurricane_lpc55s69_hal
-    hurricane
-)
+# Now include the NXP SDK after the target is created
+include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 
 # Create the HAL library for LPC55S69
 add_library(hurricane_lpc55s69_hal
     # HAL implementation files for LPC55S69
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c
     ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_init_lpc55s69.c
     
     # Include main.c as a backup source file
@@ -55,6 +36,72 @@ target_include_directories(hurricane_lpc55s69_hal PUBLIC
     ${CMAKE_SOURCE_DIR}/lib/hurricane/core
     ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
     ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/device
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
+    ${CMAKE_CURRENT_BINARY_DIR}/nxp_sdk_config
+    # Add NXP SDK paths for the LPC55S69 HAL library
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph1
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph2
+    ${NXP_SDK_PATH}/devices/LPC/LPC5500/periph3
+    ${NXP_SDK_PATH}/CMSIS/Core/Include
+    ${NXP_SDK_PATH}/arch/arm/CMSIS/Core/Include
+    ${NXP_SDK_PATH}/drivers/common
+    # Add debug console component
+    ${NXP_SDK_PATH}/components/debug_console
+    ${NXP_SDK_PATH}/components/serial_manager
+    # Add OS abstraction component
+    ${NXP_SDK_PATH}/components/osa
+    ${NXP_SDK_PATH}/components/osa/config
+)
+
+# Add compiler options for HAL library to include our USB host configuration fixes
+target_compile_options(hurricane_lpc55s69_hal PRIVATE
+    -include "${CMAKE_SOURCE_DIR}/lib/hurricane/core/usb_host_config_fix.h"
+)
+
+# Also add SDK components to the HAL library
+add_nxp_sdk_components(hurricane_lpc55s69_hal
+    USB_HOST
+    USB_DEVICE
+    USB_HID_HOST
+    USB_HID_DEVICE
+    platform.drivers.gpio # Changed from driver.gpio
+    CLOCK
+)
+
+# Add CPU definitions for the HAL library
+target_compile_definitions(hurricane_lpc55s69_hal PUBLIC
+    CPU_LPC55S69JBD100_cm33_core0
+    # __CORTEX_M=33  # Removed to avoid conflict with core_cm33.h
+    __FPU_PRESENT=1
+    __NEWLIB__
+    __USE_CMSIS
+)
+
+# Include directories
+target_include_directories(${LPC55S69_TARGET_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/lib/hurricane
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/core
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw
+    ${CMAKE_SOURCE_DIR}/lib/hurricane/usb
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/device
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/CMSIS
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/usb/include
+    ${CMAKE_SOURCE_DIR}/mcu_workspace/Hurricane_LPC55S69/component/osa
+    ${CMAKE_CURRENT_BINARY_DIR}/nxp_sdk_config
+)
+
+# Link against our LPC55S69 HAL library and Hurricane core
+target_link_libraries(${LPC55S69_TARGET_NAME}
+    hurricane_lpc55s69_hal
+    hurricane
 )
 
 # Add NXP SDK components with more comprehensive list
@@ -64,7 +111,7 @@ add_nxp_sdk_components(${LPC55S69_TARGET_NAME}
     USB_DEVICE
     USB_HID_HOST
     USB_HID_DEVICE
-    GPIO
+    platform.drivers.gpio # Changed from driver.gpio
     CLOCK
 )
 
@@ -86,6 +133,7 @@ target_compile_options(${LPC55S69_TARGET_NAME} PRIVATE
     -Wno-unused-parameter
     -Wno-unused-variable
     -O2
+    -include "${CMAKE_SOURCE_DIR}/lib/hurricane/core/usb_host_config_fix.h"
 )
 
 # LPC55S69-specific compiler definitions
@@ -105,14 +153,14 @@ target_link_options(${LPC55S69_TARGET_NAME} PRIVATE
     -mthumb
     -mfloat-abi=hard
     -mfpu=fpv5-sp-d16
-    --specs=nano.specs
-    --specs=nosys.specs
+    -nostdlib
     -Wall
     -Wl,--gc-sections
     -fno-common
     -ffunction-sections
     -fdata-sections
     -Wl,--print-memory-usage
+    -T${LPC55S69_LINKER_SCRIPT}
 )
 
 # Binary file generation
@@ -133,9 +181,7 @@ install(TARGETS ${LPC55S69_TARGET_NAME}
     RUNTIME DESTINATION bin
 )
 
-# Add examples subdirectory conditionally
-# Note: Skip examples for now until they are properly configured
-# The examples/lpc55s69 directory exists but doesn't have a CMakeLists.txt file yet
-#if(EXISTS ${CMAKE_SOURCE_DIR}/examples/lpc55s69)
-#    add_subdirectory(${CMAKE_SOURCE_DIR}/examples/lpc55s69 ${CMAKE_BINARY_DIR}/examples/lpc55s69)
-#endif()
+# Add examples subdirectory - using relative path to avoid binary directory conflict
+if(EXISTS ${CMAKE_SOURCE_DIR}/examples/dual_hid/lpc55s69)
+    add_subdirectory(examples/dual_hid/lpc55s69 examples/dual_hid/lpc55s69)
+endif()
