@@ -73,7 +73,7 @@ add_nxp_sdk_components(hurricane_lpc55s69_hal
 # Add CPU definitions for the HAL library
 target_compile_definitions(hurricane_lpc55s69_hal PUBLIC
     CPU_LPC55S69JBD100_cm33_core0
-    __CORTEX_M=33
+    # __CORTEX_M=33  # Removed to avoid conflict with core_cm33.h
     __FPU_PRESENT=1
     __NEWLIB__
     __USE_CMSIS

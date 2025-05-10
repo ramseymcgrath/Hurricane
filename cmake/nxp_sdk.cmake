@@ -82,6 +82,7 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
       ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
+      ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/periph
       ${NXP_USB_MIDDLEWARE_PATH}
       ${NXP_USB_MIDDLEWARE_PATH}/include
       ${NXP_USB_MIDDLEWARE_PATH}/phy
@@ -90,7 +91,7 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/components/osa
       ${EFFECTIVE_SDK_PATH}/components/usb
       ${EFFECTIVE_SDK_PATH}/components/usb/device
-      ${EFFECTIVE_SDK_PATH}/components/usb/phy
+      ${EFFECTIVE_SDK_PATH}/components/usb/phy # Added path for fsl_usb_phy.h
       ${NXP_USB_MIDDLEWARE_PATH}/device/class
       ${NXP_USB_MIDDLEWARE_PATH}/host/class
       ${EFFECTIVE_SDK_PATH}/CMSIS/Core/Include
@@ -270,19 +271,19 @@ function(add_nxp_sdk_components TARGET)
   # Add USB Device components if needed
   if(NEED_USB_DEVICE AND ENABLE_USB_DEVICE)
     list(APPEND COMPONENT_SOURCES ${NXP_SDK_USB_DEVICE_SOURCES})
-    target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_EHCI=1)
+    # target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_EHCI=1) # Removed, defined in usb_device_config.h
   endif()
   
   # Add HID Host component if needed
   if(NEED_USB_HID_HOST AND ENABLE_USB_HOST)
     list(APPEND COMPONENT_SOURCES ${NXP_SDK_USB_HID_HOST_SOURCES})
-    target_compile_definitions(${TARGET} PRIVATE USB_HOST_CONFIG_HID=1)
+    # target_compile_definitions(${TARGET} PRIVATE USB_HOST_CONFIG_HID=1) # This is for host, might be okay, but HID device is in usb_device_config.h
   endif()
   
   # Add HID Device component if needed
   if(NEED_USB_HID_DEVICE AND ENABLE_USB_DEVICE)
     list(APPEND COMPONENT_SOURCES ${NXP_SDK_USB_HID_DEVICE_SOURCES})
-    target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_HID=1)
+    # target_compile_definitions(${TARGET} PRIVATE USB_DEVICE_CONFIG_HID=1) # Removed, defined in usb_device_config.h
   endif()
   
   # Add GPIO if needed
@@ -314,12 +315,16 @@ function(add_nxp_sdk_components TARGET)
       SDK_DEVICE_FAMILY=LPC55S69
       FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL=1
       PRINTF_ADVANCED_ENABLE=1
-      USB_DEVICE_CONFIG_CDC_MULTIPORT=1
+      USB_DEVICE_CONFIG_CDC_MULTIPORT=1 # Assuming this is still desired
       FSL_OSA_BM_TASK_ENABLE=0
       FSL_OSA_BM_TIMER_CONFIG=0
-      USB_DEVICE_CONFIG_LPCIP3511HS=1
-      USB_DEVICE_CONFIG_HIGHSPEED=1
-      USB_DEVICE_CONFIG_DETACH_ENABLE=1
+      # The following USB device config macros are removed from here
+      # as they are defined in usb_device_config.h
+      # USB_DEVICE_CONFIG_LPCIP3511FS=1
+      # USB_DEVICE_CONFIG_LPCIP3511HS=0
+      # USB_DEVICE_CONFIG_EHCI=0
+      USB_DEVICE_CONFIG_HIGHSPEED=0    # Device is FS
+      USB_DEVICE_CONFIG_CONTROLLER_ID=kUSB_ControllerLpcIp3511Fs0 # Explicitly set controller ID
     )
   endif()
   
@@ -328,8 +333,8 @@ function(add_nxp_sdk_components TARGET)
     # Dual USB stack configuration
     target_compile_definitions(${TARGET} PRIVATE
       USB_DUAL_STACK=1
-      USB_DEVICE_CONFIG_EHCI=1
-      USB_HOST_CONFIG_EHCI=1
+      # USB_DEVICE_CONFIG_EHCI is defined in usb_device_config.h
+      USB_HOST_CONFIG_EHCI=1 # Host might still use EHCI for USB1 if dual stack implies using both controllers
       HURRICANE_DUAL_USB_SUPPORT=1
     )
   elseif(ENABLE_USB_HOST)
@@ -342,7 +347,7 @@ function(add_nxp_sdk_components TARGET)
     # Device-only configuration
     target_compile_definitions(${TARGET} PRIVATE
       USB_DUAL_STACK=0
-      USB_DEVICE_CONFIG_EHCI=1
+      # USB_DEVICE_CONFIG_EHCI is defined in usb_device_config.h
     )
   endif()
   
@@ -358,13 +363,33 @@ function(generate_nxp_sdk_config TARGET)
   # USB device configuration with more options
   set(USB_DEVICE_CONFIG_FILE ${CONFIG_DIR}/usb_device_config.h)
   file(WRITE ${USB_DEVICE_CONFIG_FILE} "/* Generated USB device configuration for ${TARGET} */\n")
+  file(APPEND ${USB_DEVICE_CONFIG_FILE} "/* This file is the single source of truth for USB device configuration */\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#ifndef USB_DEVICE_CONFIG_H\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_H\n\n")
-  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_EHCI (1U)\n")
-  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MAX_POWER (500U)\n")
+
+  if(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "/* LPC55S69 USB device controller configuration */\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511FS (1U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511HS (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_EHCI (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_KHCI (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_CONTROLLER_ID kUSB_ControllerLpcIp3511Fs0\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MAX_POWER (100U) /* Max power in mA */\n")
+  else()
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "/* Default EHCI USB device controller configuration */\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_EHCI (1U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511FS (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_LPCIP3511HS (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_KHCI (0U)\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_CONTROLLER_ID kUSB_ControllerEhci0\n")
+    file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MAX_POWER (500U)\n")
+  endif()
+
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_SELF_POWER (0U)\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_DETACH_ENABLE (0U)\n")
+  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_INTERFACES (4U) /* Max interfaces */\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_ENDPOINTS (8U)\n")
+  file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_STRING_COUNT (4U) /* e.g., LangID, Manufacturer, Product, SerialNumber */\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_HID (1U)\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_CDC_ACM (0U)\n")
   file(APPEND ${USB_DEVICE_CONFIG_FILE} "#define USB_DEVICE_CONFIG_MSC (0U)\n")

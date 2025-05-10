@@ -38,24 +38,14 @@ else()
     )
     
     # Add NXP SDK include paths for LPC55S69 platform
-    if(DEFINED PLATFORM AND PLATFORM STREQUAL "lpc55s69")
-        target_include_directories(hurricane PUBLIC
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/utilities
-            ${NXP_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/components
-            ${NXP_SDK_PATH}/CMSIS/Core/Include
-            ${NXP_SDK_PATH}/drivers/common
-            ${NXP_SDK_PATH}/components/gpio
-            ${NXP_SDK_PATH}/components/lists
-            ${NXP_SDK_PATH}/components/uart
-            ${NXP_SDK_PATH}/components/serial_manager
-        )
+    if(DEFINED HURRICANE_TARGET_DEVICE AND HURRICANE_TARGET_DEVICE STREQUAL "lpc55s69") # Changed PLATFORM to HURRICANE_TARGET_DEVICE
+        # Use the NXP_SDK_INCLUDE_DIRS variable prepared by cmake/nxp_sdk.cmake
+        target_include_directories(hurricane PUBLIC ${NXP_SDK_INCLUDE_DIRS})
         
         # Add required CPU and device definitions for LPC55S69
         target_compile_definitions(hurricane PUBLIC
             CPU_LPC55S69JBD100_cm33_core0
-            __CORTEX_M=33
+            # __CORTEX_M=33  # Removed to avoid conflict with core_cm33.h
             __FPU_PRESENT=1
             __NEWLIB__
             __USE_CMSIS
