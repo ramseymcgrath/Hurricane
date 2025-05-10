@@ -9,6 +9,7 @@
 #include "hurricane.h"
 #include "hurricane_hw_hal.h"
 #include "core/usb_interface_manager.h"
+#include "usb/usb_hid.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -100,7 +100,7 @@ if(DEFINED HURRICANE_TARGET_DEVICE)
       ${EFFECTIVE_SDK_PATH}/components/serial_manager
       ${EFFECTIVE_SDK_PATH}/components/lists
       ${EFFECTIVE_SDK_PATH}/drivers/common
-      ${EFFECTIVE_SDK_PATH}/drivers/gpio
+      ${EFFECTIVE_SDK_PATH}/drivers/lpc_gpio
     )
     
     # Store the linker script path for LPC55S69 for later use
@@ -155,7 +155,7 @@ elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_reset.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common.c
     ${EFFECTIVE_SDK_PATH}/drivers/common/fsl_common_arm.c
-    ${EFFECTIVE_SDK_PATH}/drivers/gpio/fsl_gpio.c
+    ${EFFECTIVE_SDK_PATH}/drivers/lpc_gpio/fsl_gpio.c # Use LPC-specific GPIO driver
   )
 endif()
 
@@ -214,6 +214,10 @@ if(HURRICANE_TARGET_DEVICE STREQUAL "MIMXRT1062")
     ${EFFECTIVE_SDK_PATH}/devices/RT/RT1060/drivers/fsl_clock.c
   )
 elseif(HURRICANE_TARGET_DEVICE STREQUAL "LPC55S69")
+
+  set(NXP_SDK_GPIO_SOURCES # Define NXP_SDK_GPIO_SOURCES for LPC55S69
+    ${EFFECTIVE_SDK_PATH}/drivers/lpc_gpio/fsl_gpio.c # Use LPC-specific GPIO driver
+  )
 
   set(NXP_SDK_CLOCK_SOURCES
     ${EFFECTIVE_SDK_PATH}/devices/LPC/LPC5500/LPC55S69/drivers/fsl_clock.c
@@ -415,6 +419,12 @@ function(generate_nxp_sdk_config TARGET)
   file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_CDC (0U)\n")
   file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MSC (0U)\n")
   file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_BUFFER_PROPERTY_CACHEABLE (0U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MAX_TRANSFERS (8U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MAX_HOST (1U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_ENUMERATION_MAX_STALL_RETRIES (3U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_ENUMERATION_MAX_RETRIES (3U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_MAX_NAK (10U)\n")
+  file(APPEND ${USB_HOST_CONFIG_FILE} "#define USB_HOST_CONFIG_CONFIGURATION_MAX_INTERFACE USB_HOST_CONFIG_MAX_INTERFACES\n")
   file(APPEND ${USB_HOST_CONFIG_FILE} "\n#endif /* USB_HOST_CONFIG_H */\n")
   
   # Physical layer (PHY) configuration

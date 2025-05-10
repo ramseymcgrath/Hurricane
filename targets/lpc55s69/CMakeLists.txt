@@ -24,8 +24,6 @@ include(${CMAKE_SOURCE_DIR}/cmake/nxp_sdk.cmake)
 # Create the HAL library for LPC55S69
 add_library(hurricane_lpc55s69_hal
     # HAL implementation files for LPC55S69
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_host_lpc55s69.c
-    ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_hal_device_lpc55s69.c
     ${CMAKE_SOURCE_DIR}/lib/hurricane/hw/boards/lpc5500/usb_hw_init_lpc55s69.c
     
     # Include main.c as a backup source file
@@ -62,12 +60,19 @@ target_include_directories(hurricane_lpc55s69_hal PUBLIC
     ${NXP_SDK_PATH}/components/osa/config
 )
 
+# Add compiler options for HAL library to include our USB host configuration fixes
+target_compile_options(hurricane_lpc55s69_hal PRIVATE
+    -include "${CMAKE_SOURCE_DIR}/lib/hurricane/core/usb_host_config_fix.h"
+)
+
 # Also add SDK components to the HAL library
 add_nxp_sdk_components(hurricane_lpc55s69_hal
     USB_HOST
     USB_DEVICE
     USB_HID_HOST
     USB_HID_DEVICE
+    platform.drivers.gpio # Changed from driver.gpio
+    CLOCK
 )
 
 # Add CPU definitions for the HAL library
@@ -106,7 +111,7 @@ add_nxp_sdk_components(${LPC55S69_TARGET_NAME}
     USB_DEVICE
     USB_HID_HOST
     USB_HID_DEVICE
-    GPIO
+    platform.drivers.gpio # Changed from driver.gpio
     CLOCK
 )
 
@@ -128,6 +133,7 @@ target_compile_options(${LPC55S69_TARGET_NAME} PRIVATE
     -Wno-unused-parameter
     -Wno-unused-variable
     -O2
+    -include "${CMAKE_SOURCE_DIR}/lib/hurricane/core/usb_host_config_fix.h"
 )
 
 # LPC55S69-specific compiler definitions
@@ -147,8 +153,7 @@ target_link_options(${LPC55S69_TARGET_NAME} PRIVATE
     -mthumb
     -mfloat-abi=hard
     -mfpu=fpv5-sp-d16
-    --specs=nano.specs
-    --specs=nosys.specs
+    -nostdlib
     -Wall
     -Wl,--gc-sections
     -fno-common
